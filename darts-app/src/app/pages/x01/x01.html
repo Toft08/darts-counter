@@ -1,0 +1,21 @@
+
+<div class="x01-container">
+  <h2>X01 Game</h2>
+  <form>
+    <label>Start Points:
+      <input type="number" [(ngModel)]="startPoints" name="startPoints" min="101" max="1001" />
+    </label>
+    <label>Legs:
+      <input type="number" [(ngModel)]="legs" name="legs" min="1" max="10" />
+    </label>
+    <button type="button" (click)="startGame()">Start Game</button>
+  </form>
+  <div *ngIf="gameStarted">
+    <p>Current Score: {{ currentScore }}</p>
+    <p>Legs Left: {{ legsLeft }}</p>
+    <label>Throw:
+      <input type="number" [(ngModel)]="throwScore" name="throwScore" min="0" max="180" />
+    </label>
+    <button type="button" (click)="submitThrow()">Submit Throw</button>
+  </div>
+</div>

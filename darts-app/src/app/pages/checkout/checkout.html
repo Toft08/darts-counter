@@ -1,0 +1,20 @@
+
+<div class="checkout-container">
+  <h2>Checkout Training</h2>
+  <form>
+    <label>Start Number:
+      <input type="number" [(ngModel)]="startNumber" name="startNumber" min="2" max="170" />
+    </label>
+    <button type="button" (click)="startTraining()">Start Training</button>
+  </form>
+  <div *ngIf="trainingStarted">
+    <p>Current Score: {{ currentScore }}</p>
+    <p>Throws Left: {{ throwsLeft }}</p>
+    <label>Throw:
+      <input type="number" [(ngModel)]="throwScore" name="throwScore" min="0" max="180" />
+    </label>
+    <button type="button" (click)="submitThrow()">Submit Throw</button>
+    <p *ngIf="status === 'success'">✔ You checked out! Start increased.</p>
+    <p *ngIf="status === 'reset'">❌ Too many throws – Reset!</p>
+  </div>
+</div>
