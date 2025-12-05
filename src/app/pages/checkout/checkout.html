@@ -1,26 +1,54 @@
 
 <div class="checkout-container">
   <h2>Checkout Training</h2>
-  <form>
-    <label>Start Number:
-      <input type="number" [(ngModel)]="startNumber" name="startNumber" min="2" max="170" />
-    </label>
-    <label>Input Mode:
-      <select [(ngModel)]="game.inputMode" name="inputMode" (change)="game.resetRound()">
-        <option value="dart-by-dart">Dart by Dart</option>
-        <option value="per-turn">Per Turn (3 darts)</option>
-      </select>
-    </label>
-    <button type="button" (click)="startTraining()">Start Training</button>
-  </form>
+  
+  <div *ngIf="!trainingStarted">
+    <h3>Setup</h3>
+    <form>
+      <label>Start Number:
+        <input type="number" [(ngModel)]="startNumber" name="startNumber" min="2" max="170" />
+      </label>
+      <label>Input Mode:
+        <select [(ngModel)]="game.inputMode" name="inputMode" (change)="game.resetRound()">
+          <option value="dart-by-dart">Dart by Dart</option>
+          <option value="per-turn">Per Turn (3 darts)</option>
+        </select>
+      </label>
+    </form>
+
+    <h3>Players</h3>
+    <div class="players-list">
+      <div *ngFor="let player of players; let i = index" class="player-item">
+        <span>{{ player.name }}</span>
+        <button type="button" (click)="removePlayer(i)" *ngIf="players.length > 1">Remove</button>
+      </div>
+    </div>
+    <div class="add-player">
+      <input type="text" [(ngModel)]="newPlayerName" placeholder="Player name" (keyup.enter)="addPlayer()" />
+      <button type="button" (click)="addPlayer()">Add Player</button>
+    </div>
+    
+    <button type="button" (click)="startTraining()" class="start-btn">Start Training</button>
+  </div>
   
   <div *ngIf="trainingStarted">
-    <p>Target: {{ startNumber }}</p>
-    <p>Current Score: {{ currentScore }}</p>
-    <p *ngIf="status === 'success'" class="success">✔ You checked out! Start increased to {{ startNumber }}</p>
+    <div class="scoreboard">
+      <h3>Progress</h3>
+      <div *ngFor="let player of players; let i = index" class="score-row" [class.active]="i === currentPlayerIndex" [class.failed]="player.failed">
+        <span class="player-name">{{ player.name }}</span>
+        <span class="player-target">Target: {{ player.target }}</span>
+        <span class="player-darts">Darts: {{ player.dartsThrown }}/9</span>
+        <span class="player-checkouts">✓ {{ player.checkouts }}</span>
+      </div>
+    </div>
+
+    <div class="current-turn">
+      <h3>Current Turn: {{ currentPlayer.name }}</h3>
+      <p>Target: {{ currentPlayer.target }} | Current: {{ currentPlayer.score }}</p>
+    </div>
     
     <app-darts-input 
-      [currentScore]="currentScore" 
+      [currentScore]="currentPlayer.score" 
       (onDartSubmit)="onDartSubmit($event)">
     </app-darts-input>
   </div>

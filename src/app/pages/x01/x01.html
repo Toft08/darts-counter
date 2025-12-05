@@ -1,27 +1,56 @@
 
 <div class="x01-container">
   <h2>X01 Game</h2>
-  <form>
-    <label>Start Points:
-      <input type="number" [(ngModel)]="startPoints" name="startPoints" min="101" max="1001" />
-    </label>
-    <label>Legs:
-      <input type="number" [(ngModel)]="legs" name="legs" min="1" max="10" />
-    </label>
-    <label>Input Mode:
-      <select [(ngModel)]="game.inputMode" name="inputMode" (change)="game.resetRound()">
-        <option value="dart-by-dart">Dart by Dart</option>
-        <option value="per-turn">Per Turn (3 darts)</option>
-      </select>
-    </label>
-    <button type="button" (click)="startGame()">Start Game</button>
-  </form>
+  
+  <div *ngIf="!gameStarted">
+    <h3>Setup</h3>
+    <form>
+      <label>Start Points:
+        <input type="number" [(ngModel)]="startPoints" name="startPoints" min="101" max="1001" />
+      </label>
+      <label>Legs (Best of):
+        <input type="number" [(ngModel)]="legs" name="legs" min="1" max="10" />
+      </label>
+      <label>Input Mode:
+        <select [(ngModel)]="game.inputMode" name="inputMode" (change)="game.resetRound()">
+          <option value="dart-by-dart">Dart by Dart</option>
+          <option value="per-turn">Per Turn (3 darts)</option>
+        </select>
+      </label>
+    </form>
+
+    <h3>Players</h3>
+    <div class="players-list">
+      <div *ngFor="let player of players; let i = index" class="player-item">
+        <span>{{ player.name }}</span>
+        <button type="button" (click)="removePlayer(i)" *ngIf="players.length > 1">Remove</button>
+      </div>
+    </div>
+    <div class="add-player">
+      <input type="text" [(ngModel)]="newPlayerName" placeholder="Player name" (keyup.enter)="addPlayer()" />
+      <button type="button" (click)="addPlayer()">Add Player</button>
+    </div>
+    
+    <button type="button" (click)="startGame()" class="start-btn">Start Game</button>
+  </div>
+
   <div *ngIf="gameStarted">
-    <p>Current Score: {{ currentScore }}</p>
-    <p>Legs Left: {{ legsLeft }}</p>
+    <div class="scoreboard">
+      <h3>Scoreboard</h3>
+      <div *ngFor="let player of players; let i = index" class="score-row" [class.active]="i === currentPlayerIndex">
+        <span class="player-name">{{ player.name }}</span>
+        <span class="player-score">{{ player.score }}</span>
+        <span class="player-legs">Legs: {{ player.legsWon }}</span>
+      </div>
+    </div>
+
+    <div class="current-turn">
+      <h3>Current Turn: {{ currentPlayer.name }}</h3>
+      <p>Score: {{ currentPlayer.score }}</p>
+    </div>
     
     <app-darts-input 
-      [currentScore]="currentScore" 
+      [currentScore]="currentPlayer.score" 
       (onDartSubmit)="onDartSubmit($event)">
     </app-darts-input>
   </div>
