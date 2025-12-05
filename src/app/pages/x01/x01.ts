@@ -3,12 +3,13 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GameService } from '../../services/game';
+import { DartsInputComponent } from '../../components/darts-input/darts-input';
 
 @Component({
   selector: 'app-x01',
   templateUrl: './x01.html',
   standalone: true,
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, FormsModule, DartsInputComponent]
 })
 export class X01Component {
   startPoints: number = 501;
@@ -16,8 +17,6 @@ export class X01Component {
   gameStarted: boolean = false;
   currentScore: number = 501;
   legsLeft: number = 1;
-  throwScore: number = 0;
-  scoreInput: number = 0;
 
   constructor(public game: GameService) {}
 
@@ -28,30 +27,32 @@ export class X01Component {
     this.gameStarted = true;
   }
 
-  submitThrow() {
-    if (this.throwScore > 0 && this.throwScore <= this.currentScore) {
-      const won = this.game.subtract(this.throwScore);
-      this.currentScore = this.game.currentScore;
-      
-      if (won) {
-        this.legsLeft--;
-        if (this.legsLeft > 0) {
-          alert('Leg won! Starting next leg...');
-          this.currentScore = this.startPoints;
-          this.game.currentScore = this.startPoints;
-        } else {
-          alert('Game won!');
-          this.gameStarted = false;
-        }
+  onDartSubmit(dartScore: number) {
+    const result = this.game.inputMode === 'dart-by-dart' 
+      ? this.game.submitDart(dartScore, this.currentScore)
+      : this.game.submitTurn(dartScore, this.currentScore);
+
+    if (!result.valid) {
+      alert('Invalid score! Must be between 0-180');
+      return;
+    }
+
+    if (result.bust) {
+      alert('Bust! Score too high. Round reset.');
+      return;
+    }
+
+    this.currentScore = result.newScore;
+
+    if (result.finished) {
+      this.legsLeft--;
+      if (this.legsLeft > 0) {
+        alert('Leg won! Starting next leg...');
+        this.currentScore = this.startPoints;
+      } else {
+        alert('🎉 Game won!');
+        this.gameStarted = false;
       }
     }
-    this.throwScore = 0;
-  }
-
-  subtract() {
-    if (this.game.subtract(this.scoreInput)) {
-      alert("Leg won!");
-    }
-    this.scoreInput = 0;
   }
 }

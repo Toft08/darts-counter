@@ -8,14 +8,21 @@
     <label>Legs:
       <input type="number" [(ngModel)]="legs" name="legs" min="1" max="10" />
     </label>
+    <label>Input Mode:
+      <select [(ngModel)]="game.inputMode" name="inputMode" (change)="game.resetRound()">
+        <option value="dart-by-dart">Dart by Dart</option>
+        <option value="per-turn">Per Turn (3 darts)</option>
+      </select>
+    </label>
     <button type="button" (click)="startGame()">Start Game</button>
   </form>
   <div *ngIf="gameStarted">
     <p>Current Score: {{ currentScore }}</p>
     <p>Legs Left: {{ legsLeft }}</p>
-    <label>Throw:
-      <input type="number" [(ngModel)]="throwScore" name="throwScore" min="0" max="180" />
-    </label>
-    <button type="button" (click)="submitThrow()">Submit Throw</button>
+    
+    <app-darts-input 
+      [currentScore]="currentScore" 
+      (onDartSubmit)="onDartSubmit($event)">
+    </app-darts-input>
   </div>
 </div>

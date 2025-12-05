@@ -5,16 +5,23 @@
     <label>Start Number:
       <input type="number" [(ngModel)]="startNumber" name="startNumber" min="2" max="170" />
     </label>
+    <label>Input Mode:
+      <select [(ngModel)]="game.inputMode" name="inputMode" (change)="game.resetRound()">
+        <option value="dart-by-dart">Dart by Dart</option>
+        <option value="per-turn">Per Turn (3 darts)</option>
+      </select>
+    </label>
     <button type="button" (click)="startTraining()">Start Training</button>
   </form>
+  
   <div *ngIf="trainingStarted">
+    <p>Target: {{ startNumber }}</p>
     <p>Current Score: {{ currentScore }}</p>
-    <p>Throws Left: {{ throwsLeft }}</p>
-    <label>Throw:
-      <input type="number" [(ngModel)]="throwScore" name="throwScore" min="0" max="180" />
-    </label>
-    <button type="button" (click)="submitThrow()">Submit Throw</button>
-    <p *ngIf="status === 'success'">✔ You checked out! Start increased.</p>
-    <p *ngIf="status === 'reset'">❌ Too many throws – Reset!</p>
+    <p *ngIf="status === 'success'" class="success">✔ You checked out! Start increased to {{ startNumber }}</p>
+    
+    <app-darts-input 
+      [currentScore]="currentScore" 
+      (onDartSubmit)="onDartSubmit($event)">
+    </app-darts-input>
   </div>
 </div>
