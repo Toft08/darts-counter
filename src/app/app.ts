@@ -1,24 +1,12 @@
 import { Component } from '@angular/core';
-import { RouterOutlet, RouterLink } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
+import { NavbarComponent } from './components/navbar/navbar';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink],
-  template: `
-    <div class="app-container">
-      <nav>
-        <a routerLink="/x01">X01 Game</a>
-        <a routerLink="/checkout">Checkout Training</a>
-      </nav>
-      <router-outlet></router-outlet>
-    </div>
-  `,
-  styles: [`
-    .app-container { padding: 20px; }
-    nav { margin-bottom: 20px; }
-    nav a { margin-right: 15px; padding: 10px; text-decoration: none; background: #007bff; color: white; border-radius: 5px; }
-    nav a:hover { background: #0056b3; }
-  `]
+  imports: [RouterOutlet, NavbarComponent],
+  templateUrl: './app.html',
+  styleUrls: ['./app.scss']
 })
 export class AppComponent {}
