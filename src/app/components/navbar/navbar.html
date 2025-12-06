@@ -1,6 +1,47 @@
 <nav>
   <a routerLink="/" class="home-link">🎯 Darts Counter</a>
-  @if (currentGameMode) {
-    <span class="game-mode">{{ currentGameMode }}</span>
-  }
+  
+  <div class="nav-center">
+    @if (currentGameMode) {
+      <span class="game-mode">{{ currentGameMode }}</span>
+    }
+  </div>
+
+  <div class="nav-right">
+    @if (currentGameMode) {
+      <div class="settings-container">
+        <button class="settings-btn" (click)="toggleSettings()" type="button">
+          ⚙️
+        </button>
+        
+        @if (showSettings) {
+          <div class="settings-dropdown">
+            <div class="settings-overlay" (click)="closeSettings()"></div>
+            <div class="settings-menu">
+              <h3>Settings</h3>
+              <div class="input-mode-group">
+                <label>Input Mode:</label>
+                <div class="mode-buttons">
+                  <button 
+                    type="button" 
+                    class="mode-btn"
+                    [class.active]="game.inputMode === 'dart-by-dart'"
+                    (click)="game.inputMode = 'dart-by-dart'; onInputModeChange()">
+                    Dart by Dart
+                  </button>
+                  <button 
+                    type="button" 
+                    class="mode-btn"
+                    [class.active]="game.inputMode === 'per-turn'"
+                    (click)="game.inputMode = 'per-turn'; onInputModeChange()">
+                    Per Visit
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
 </nav>

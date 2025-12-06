@@ -8,12 +8,6 @@
       <label>Start Number:
         <input type="number" [(ngModel)]="startNumber" name="startNumber" min="2" max="170" />
       </label>
-      <label>Input Mode:
-        <select [(ngModel)]="game.inputMode" name="inputMode" (change)="game.resetRound()">
-          <option value="dart-by-dart">Dart by Dart</option>
-          <option value="per-turn">Per Visit</option>
-        </select>
-      </label>
     </form>
 
     <h3>Players</h3>
