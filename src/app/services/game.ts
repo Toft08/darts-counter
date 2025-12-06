@@ -36,6 +36,16 @@ export class GameService {
     // Don't reset totalThrows or throwHistory - they keep incrementing
   }
 
+  resetToFirstDart() {
+    // Reset everything to start fresh at dart 1
+    this.dart1 = 0;
+    this.dart2 = 0;
+    this.dart3 = 0;
+    this.roundScore = 0;
+    // Align totalThrows to next multiple of 3 (so getCurrentDartInRound() returns 1)
+    this.totalThrows = Math.ceil(this.totalThrows / 3) * 3;
+  }
+
   submitDart(dartScore: number, currentScore: number): { valid: boolean; bust: boolean; finished: boolean; newScore: number } {
     // Validate dart score
     if (dartScore < 0 || dartScore > 180) {

@@ -88,7 +88,7 @@ export class CheckoutComponent {
     });
     this.currentPlayerIndex = 0;
     this.roundActive = true;
-    this.game.resetRound();
+    this.game.resetToFirstDart(); // Use resetToFirstDart to align to dart 1
   }
 
   nextPlayer() {
@@ -138,25 +138,42 @@ export class CheckoutComponent {
     if (result.bust) {
       // Store the darts that caused the bust (using pre-submit values if 3rd dart)
       this.currentPlayer.lastDarts = isThirdDart ? dartsBeforeSubmit : [this.game.dart1, this.game.dart2, this.game.dart3];
+      // Bust: reset score but keep going (the thrown darts still count toward the 9)
       this.currentPlayer.score = this.currentPlayer.target;
-      this.currentPlayer.failed = true;
-      this.checkRoundEnd();
+      
+      // If this was the 3rd dart or per-turn mode, move to next player
+      if (this.game.getCurrentDartInRound() === 1 || this.game.inputMode === 'per-turn') {
+        if (this.currentPlayer.dartsThrown >= 9) {
+          // Player has used all 9 darts
+          this.currentPlayer.failed = true;
+          this.checkRoundEnd();
+        } else {
+          this.nextPlayer();
+        }
+      }
       return;
     }
 
     this.currentPlayer.score = result.newScore;
 
     if (result.finished) {
-      // Store the winning darts
+      // Store the winning darts and player info before resetting
       this.currentPlayer.lastDarts = isThirdDart ? dartsBeforeSubmit : [this.game.dart1, this.game.dart2, this.game.dart3];
       this.currentPlayer.checkouts++;
       this.currentPlayer.target++;
+      const winnerName = this.currentPlayer.name;
+      const newTarget = this.currentPlayer.target;
       this.status = 'success';
+      
+      // Immediately start new round for all players before any further processing
+      this.startNewRound();
+      
       setTimeout(() => {
-        alert(`✅ ${this.currentPlayer.name} checked out! Next target: ${this.currentPlayer.target}`);
+        alert(`✅ ${winnerName} checked out! Next target: ${newTarget}`);
         this.status = '';
-        this.startNewRound();
       }, 100);
+      
+      return; // Stop processing immediately
     } else if (this.game.getCurrentDartInRound() === 1 && this.game.inputMode === 'dart-by-dart') {
       // Turn finished (3 darts thrown), use the pre-submit values we captured
       this.currentPlayer.lastDarts = dartsBeforeSubmit;
