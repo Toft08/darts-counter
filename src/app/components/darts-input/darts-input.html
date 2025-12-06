@@ -22,7 +22,7 @@
     <!-- Unified Button Grid -->
     <div class="unified-grid">
       <!-- Row 1: SB, 20, 19, 18, 17 -->
-      <button type="button" class="grid-btn bull-btn" [class.selected]="selectedMultiplier === 25 || selectedMultiplier === 50" (click)="toggleBull()">{{ bullMode === 'single' ? 'SB' : 'DB' }}</button>
+      <button type="button" class="grid-btn bull-btn" [class.selected]="selectedMultiplier !== 1" (click)="selectNumber(25)">SB</button>
       <button type="button" class="grid-btn" [class.selected]="selectedMultiplier !== 1 && selectedMultiplier !== 25 && selectedMultiplier !== 50" (click)="selectNumber(20)">20</button>
       <button type="button" class="grid-btn" [class.selected]="selectedMultiplier !== 1 && selectedMultiplier !== 25 && selectedMultiplier !== 50" (click)="selectNumber(19)">19</button>
       <button type="button" class="grid-btn" [class.selected]="selectedMultiplier !== 1 && selectedMultiplier !== 25 && selectedMultiplier !== 50" (click)="selectNumber(18)">18</button>

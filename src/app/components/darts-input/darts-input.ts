@@ -15,8 +15,7 @@ export class DartsInputComponent {
     @Output() onDartSubmit = new EventEmitter<number>();
 
     // Dart by dart mode - button layout
-    selectedMultiplier: number = 1; // 1=single, 2=double, 3=triple, 25=bull, 50=double bull
-    bullMode: 'single' | 'double' = 'single'; // Track which bull mode
+    selectedMultiplier: number = 1; // 1=single, 2=double, 3=triple
     dart1Value: number | null = null;
     dart2Value: number | null = null;
     dart3Value: number | null = null;
@@ -35,16 +34,6 @@ export class DartsInputComponent {
             this.selectedMultiplier = 1;
         } else {
             this.selectedMultiplier = mult;
-        }
-    }
-
-    toggleBull() {
-        if (this.bullMode === 'single') {
-            this.bullMode = 'double';
-            this.selectedMultiplier = 50;
-        } else {
-            this.bullMode = 'single';
-            this.selectedMultiplier = 25;
         }
     }
 
@@ -75,12 +64,10 @@ export class DartsInputComponent {
         if (num === 0) {
             // Miss
             dartScore = 0;
-        } else if (this.selectedMultiplier === 25) {
-            // Bull - 25 for single, 50 for double
-            dartScore = 25;
-        } else if (this.selectedMultiplier === 50) {
-            // Double bull
-            dartScore = 50;
+        } else if (num === 25) {
+            // Bull: 25 base, 50 if D pressed, ignore T
+            if (this.selectedMultiplier === 3) return; // Triple not allowed
+            dartScore = this.selectedMultiplier === 2 ? 50 : 25;
         } else {
             // Regular scoring
             dartScore = num * this.selectedMultiplier;
@@ -101,7 +88,6 @@ export class DartsInputComponent {
 
         // Reset multiplier to single for next dart
         this.selectedMultiplier = 1;
-        this.bullMode = 'single';
 
         // Reset display when starting new round
         if (this.game.getCurrentDartInRound() === 1) {
