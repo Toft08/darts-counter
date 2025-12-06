@@ -60,11 +60,9 @@ export class GameService {
       this.dart3 = dartScore;
     }
     
-    console.log('submitDart: pushing', dartScore, 'to history, totalThrows before=', this.totalThrows);
     this.throwHistory.push(dartScore);
     this.totalThrows++;
     this.roundScore += dartScore;
-    console.log('submitDart: totalThrows after=', this.totalThrows);
 
     // Check if finished (score = 0)
     if (newScore === 0) {
@@ -119,11 +117,9 @@ export class GameService {
     }
     
     const lastThrow = this.throwHistory.pop()!;
-    console.log('undoLastThrow: popped', lastThrow, 'from history, totalThrows before=', this.totalThrows);
     
     // Decrement first
     this.totalThrows--;
-    console.log('undoLastThrow: totalThrows after=', this.totalThrows, 'returning', lastThrow);
     
     // Now getCurrentDartInRound() tells us which dart we just undid
     const dartThatWasUndone = this.getCurrentDartInRound();
