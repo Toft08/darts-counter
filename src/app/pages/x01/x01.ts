@@ -82,8 +82,15 @@ export class X01Component {
     }
 
     if (result.bust) {
-      alert(`${this.currentPlayer.name} bust! Next player...`);
-      this.nextPlayer();
+      // Bust just means the turn is over with no score change
+      // In dart-by-dart mode, move to next player immediately
+      // In per-visit mode, the turn is already over
+      if (this.game.inputMode === 'dart-by-dart') {
+        this.nextPlayer();
+      } else {
+        // Per-visit mode: just move to next player
+        this.nextPlayer();
+      }
       return;
     }
 

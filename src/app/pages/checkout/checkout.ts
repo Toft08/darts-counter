@@ -112,7 +112,7 @@ export class CheckoutComponent {
     }
 
     if (result.bust) {
-      alert(`${this.currentPlayer.name} bust!`);
+      // Bust just resets score and marks turn as failed
       this.currentPlayer.score = this.currentPlayer.target;
       this.currentPlayer.failed = true;
       this.checkRoundEnd();
