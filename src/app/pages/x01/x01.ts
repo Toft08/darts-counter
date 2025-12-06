@@ -71,8 +71,10 @@ export class X01Component {
   onDartSubmit(dartScore: number) {
     // Handle undo (negative score means add back)
     if (dartScore < 0) {
-      const scoreToAddBack = Math.ceil(Math.abs(dartScore)); // Remove decimal offset if present
+      const scoreToAddBack = Math.floor(Math.abs(dartScore)); // Use floor to handle decimal offset
+      console.log('UNDO: dartScore=', dartScore, 'adding back=', scoreToAddBack, 'current score=', this.currentPlayer.score);
       this.currentPlayer.score += scoreToAddBack;
+      console.log('UNDO: new score=', this.currentPlayer.score);
       return; // Important: don't continue processing
     }
     

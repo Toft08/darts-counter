@@ -95,7 +95,7 @@ export class CheckoutComponent {
     // Handle undo (negative score means add back)
     if (dartScore < 0) {
       const isPerVisitUndo = dartScore % 1 !== 0; // Has decimal = per-visit
-      const scoreToAddBack = Math.ceil(Math.abs(dartScore)); // Remove decimal offset
+      const scoreToAddBack = Math.floor(Math.abs(dartScore)); // Use floor to handle decimal offset
       this.currentPlayer.score += scoreToAddBack;
       // For per-visit undo, subtract 3 darts; for dart-by-dart, subtract 1
       const dartsToSubtract = isPerVisitUndo ? 3 : 1;

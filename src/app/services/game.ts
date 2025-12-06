@@ -16,7 +16,11 @@ export class GameService {
 
   getCurrentDartInRound(): number {
     // Returns 1, 2, or 3 based on total throws
-    return (this.totalThrows % 3) + 1;
+    // totalThrows 0,3,6,9... = dart 1 (next)
+    // totalThrows 1,4,7,10... = dart 2 (next)
+    // totalThrows 2,5,8,11... = dart 3 (next)
+    const position = this.totalThrows % 3;
+    return position === 0 ? 1 : position === 1 ? 2 : 3;
   }
 
   setInputMode(mode: 'dart-by-dart' | 'per-turn') {
@@ -56,9 +60,11 @@ export class GameService {
       this.dart3 = dartScore;
     }
     
+    console.log('submitDart: pushing', dartScore, 'to history, totalThrows before=', this.totalThrows);
     this.throwHistory.push(dartScore);
     this.totalThrows++;
     this.roundScore += dartScore;
+    console.log('submitDart: totalThrows after=', this.totalThrows);
 
     // Check if finished (score = 0)
     if (newScore === 0) {
@@ -87,9 +93,11 @@ export class GameService {
       return { valid: true, bust: true, finished: false, newScore: currentScore };
     }
 
-    // Update score
+    // Update score and track as a single "throw" representing 3 darts
     const newScore = currentScore - turnScore;
     this.roundScore = turnScore;
+    this.throwHistory.push(turnScore);
+    this.totalThrows += 3; // Per-visit counts as 3 darts
 
     // Check if finished (score = 0)
     if (newScore === 0) {
@@ -111,15 +119,21 @@ export class GameService {
     }
     
     const lastThrow = this.throwHistory.pop()!;
-    this.totalThrows--;
+    console.log('undoLastThrow: popped', lastThrow, 'from history, totalThrows before=', this.totalThrows);
     
-    // Update dart values for display
-    const dartInRound = this.getCurrentDartInRound();
-    if (dartInRound === 1) {
+    // Decrement first
+    this.totalThrows--;
+    console.log('undoLastThrow: totalThrows after=', this.totalThrows, 'returning', lastThrow);
+    
+    // Now getCurrentDartInRound() tells us which dart we just undid
+    const dartThatWasUndone = this.getCurrentDartInRound();
+    
+    // Clear the dart display for the dart we just undid
+    if (dartThatWasUndone === 1) {
       this.dart1 = 0;
-    } else if (dartInRound === 2) {
+    } else if (dartThatWasUndone === 2) {
       this.dart2 = 0;
-    } else if (dartInRound === 3) {
+    } else if (dartThatWasUndone === 3) {
       this.dart3 = 0;
     }
     
