@@ -29,9 +29,7 @@ export class CheckoutComponent {
   currentPlayerIndex: number = 0;
   roundActive: boolean = false;
 
-  constructor(public game: GameService) {
-    this.addPlayer('Player 1');
-  }
+  constructor(public game: GameService) {}
 
   get currentPlayer(): Player {
     return this.players[this.currentPlayerIndex];
@@ -61,8 +59,7 @@ export class CheckoutComponent {
 
   startTraining() {
     if (this.players.length === 0) {
-      alert('Add at least one player to start!');
-      return;
+      this.addPlayer('Thrower');
     }
     this.game.initCheckout(this.startNumber);
     this.players.forEach(p => {
@@ -95,6 +92,17 @@ export class CheckoutComponent {
   }
 
   onDartSubmit(dartScore: number) {
+    // Handle undo (negative score means add back)
+    if (dartScore < 0) {
+      const isPerVisitUndo = dartScore % 1 !== 0; // Has decimal = per-visit
+      const scoreToAddBack = Math.ceil(Math.abs(dartScore)); // Remove decimal offset
+      this.currentPlayer.score += scoreToAddBack;
+      // For per-visit undo, subtract 3 darts; for dart-by-dart, subtract 1
+      const dartsToSubtract = isPerVisitUndo ? 3 : 1;
+      this.currentPlayer.dartsThrown = Math.max(0, this.currentPlayer.dartsThrown - dartsToSubtract);
+      return;
+    }
+    
     const result = this.game.inputMode === 'dart-by-dart'
       ? this.game.submitDart(dartScore, this.currentPlayer.score)
       : this.game.submitTurn(dartScore, this.currentPlayer.score);
@@ -130,7 +138,7 @@ export class CheckoutComponent {
         this.status = '';
         this.startNewRound();
       }, 100);
-    } else if (this.game.currentDart === 1) {
+    } else if (this.game.getCurrentDartInRound() === 1 && this.game.inputMode === 'dart-by-dart') {
       // Turn finished (3 darts thrown)
       if (this.currentPlayer.dartsThrown >= 9) {
         // Player has thrown 9 darts without finishing

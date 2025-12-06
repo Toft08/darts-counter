@@ -23,6 +23,7 @@ export class DartsInputComponent {
 
     // Per visit mode
     visitScore: string = '';
+    showUndoConfirm: boolean = false;
 
     numbers = [20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
 
@@ -48,31 +49,24 @@ export class DartsInputComponent {
     }
 
     undoLastDart() {
-        if (this.game.currentDart === 1) {
-            // Can't undo if no darts thrown yet
+        const undoneValue = this.game.undoLastThrow();
+        
+        if (undoneValue === null) {
             return;
         }
         
-        // Move back one dart
-        this.game.currentDart--;
-        
-        // Clear the display for that dart
-        if (this.game.currentDart === 1) {
+        // Clear the display for the undone dart
+        const dartInRound = this.game.getCurrentDartInRound();
+        if (dartInRound === 1) {
             this.dart1Value = null;
-        } else if (this.game.currentDart === 2) {
+        } else if (dartInRound === 2) {
             this.dart2Value = null;
-        } else if (this.game.currentDart === 3) {
+        } else if (dartInRound === 3) {
             this.dart3Value = null;
         }
         
-        // Emit negative score to subtract from game
-        const lastDartValue = this.game.currentDart === 1 ? 
-            (this.game.dart1 || 0) : 
-            this.game.currentDart === 2 ? 
-            (this.game.dart2 || 0) : 
-            (this.game.dart3 || 0);
-        
-        this.onDartSubmit.emit(-lastDartValue);
+        // Emit negative value to signal undo (add back to score)
+        this.onDartSubmit.emit(-undoneValue);
     }
 
     selectNumber(num: number) {
@@ -93,11 +87,12 @@ export class DartsInputComponent {
         }
 
         // Store dart value for display
-        if (this.game.currentDart === 1) {
+        const dartInRound = this.game.getCurrentDartInRound();
+        if (dartInRound === 1) {
             this.dart1Value = dartScore;
-        } else if (this.game.currentDart === 2) {
+        } else if (dartInRound === 2) {
             this.dart2Value = dartScore;
-        } else if (this.game.currentDart === 3) {
+        } else if (dartInRound === 3) {
             this.dart3Value = dartScore;
         }
 
@@ -109,7 +104,7 @@ export class DartsInputComponent {
         this.bullMode = 'single';
 
         // Reset display when starting new round
-        if (this.game.currentDart === 1) {
+        if (this.game.getCurrentDartInRound() === 1) {
             this.dart1Value = null;
             this.dart2Value = null;
             this.dart3Value = null;
@@ -131,6 +126,34 @@ export class DartsInputComponent {
 
     clearVisitScore() {
         this.visitScore = '';
+        this.showUndoConfirm = false;
+    }
+
+    clearOrUndo() {
+        if (this.visitScore) {
+            // If there's input, clear it
+            this.clearVisitScore();
+        } else if (this.showUndoConfirm) {
+            // If confirmation is showing and clicked again, perform undo
+            this.undoLastVisit();
+            this.showUndoConfirm = false;
+        } else {
+            // Show confirmation
+            this.showUndoConfirm = true;
+        }
+    }
+
+    undoLastVisit() {
+        // Undo last 3 darts in per-visit mode and sum their values
+        let totalUndone = 0;
+        for (let i = 0; i < 3; i++) {
+            const undoneValue = this.game.undoLastThrow();
+            if (undoneValue === null) break;
+            totalUndone += undoneValue;
+        }
+        // Emit negative total to add back to score
+        // Use a flag to indicate this is per-visit undo (for dart count)
+        this.onDartSubmit.emit(-totalUndone - 0.001); // Add tiny offset to distinguish from dart-by-dart
     }
 
     submitVisit() {

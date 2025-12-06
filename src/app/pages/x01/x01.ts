@@ -25,9 +25,7 @@ export class X01Component {
   newPlayerName: string = '';
   currentPlayerIndex: number = 0;
 
-  constructor(public game: GameService) {
-    this.addPlayer('Player 1');
-  }
+  constructor(public game: GameService) {}
 
   get currentPlayer(): Player {
     return this.players[this.currentPlayerIndex];
@@ -54,8 +52,7 @@ export class X01Component {
 
   startGame() {
     if (this.players.length === 0) {
-      alert('Add at least one player to start!');
-      return;
+      this.addPlayer('Thrower');
     }
     this.game.initX01(this.startPoints, this.legs);
     this.players.forEach(p => {
@@ -72,6 +69,13 @@ export class X01Component {
   }
 
   onDartSubmit(dartScore: number) {
+    // Handle undo (negative score means add back)
+    if (dartScore < 0) {
+      const scoreToAddBack = Math.ceil(Math.abs(dartScore)); // Remove decimal offset if present
+      this.currentPlayer.score += scoreToAddBack;
+      return; // Important: don't continue processing
+    }
+    
     const result = this.game.inputMode === 'dart-by-dart' 
       ? this.game.submitDart(dartScore, this.currentPlayer.score)
       : this.game.submitTurn(dartScore, this.currentPlayer.score);
@@ -109,7 +113,7 @@ export class X01Component {
         this.players.forEach(p => p.score = this.startPoints);
         this.currentPlayerIndex = 0;
       }
-    } else if (this.game.currentDart === 1) {
+    } else if (this.game.getCurrentDartInRound() === 1) {
       // Turn finished (returned to dart 1), switch to next player
       this.nextPlayer();
     }

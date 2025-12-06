@@ -10,8 +10,14 @@ export class GameService {
   dart1: number = 0;
   dart2: number = 0;
   dart3: number = 0;
-  currentDart: number = 1; // Which dart in the round (1, 2, or 3)
+  totalThrows: number = 0; // Total number of throws (keeps incrementing)
   roundScore: number = 0; // Total score for current round
+  throwHistory: number[] = []; // Track all throws for undo functionality
+
+  getCurrentDartInRound(): number {
+    // Returns 1, 2, or 3 based on total throws
+    return (this.totalThrows % 3) + 1;
+  }
 
   setInputMode(mode: 'dart-by-dart' | 'per-turn') {
     this.inputMode = mode;
@@ -22,8 +28,8 @@ export class GameService {
     this.dart1 = 0;
     this.dart2 = 0;
     this.dart3 = 0;
-    this.currentDart = 1;
     this.roundScore = 0;
+    // Don't reset totalThrows or throwHistory - they keep incrementing
   }
 
   submitDart(dartScore: number, currentScore: number): { valid: boolean; bust: boolean; finished: boolean; newScore: number } {
@@ -40,15 +46,18 @@ export class GameService {
 
     // Store dart and update score
     const newScore = currentScore - dartScore;
+    const dartInRound = this.getCurrentDartInRound();
     
-    if (this.currentDart === 1) {
+    if (dartInRound === 1) {
       this.dart1 = dartScore;
-    } else if (this.currentDart === 2) {
+    } else if (dartInRound === 2) {
       this.dart2 = dartScore;
-    } else if (this.currentDart === 3) {
+    } else if (dartInRound === 3) {
       this.dart3 = dartScore;
     }
-
+    
+    this.throwHistory.push(dartScore);
+    this.totalThrows++;
     this.roundScore += dartScore;
 
     // Check if finished (score = 0)
@@ -58,10 +67,9 @@ export class GameService {
     }
 
     // Move to next dart or reset round
-    if (this.currentDart === 3) {
+    if (this.getCurrentDartInRound() === 1) {
+      // Just completed dart 3, reset for next round
       this.resetRound();
-    } else {
-      this.currentDart++;
     }
 
     return { valid: true, bust: false, finished: false, newScore: newScore };
@@ -95,6 +103,28 @@ export class GameService {
 
   getRoundTotal(): number {
     return this.dart1 + this.dart2 + this.dart3;
+  }
+
+  undoLastThrow(): number | null {
+    if (this.throwHistory.length === 0) {
+      return null;
+    }
+    
+    const lastThrow = this.throwHistory.pop()!;
+    this.totalThrows--;
+    
+    // Update dart values for display
+    const dartInRound = this.getCurrentDartInRound();
+    if (dartInRound === 1) {
+      this.dart1 = 0;
+    } else if (dartInRound === 2) {
+      this.dart2 = 0;
+    } else if (dartInRound === 3) {
+      this.dart3 = 0;
+    }
+    
+    this.roundScore -= lastThrow;
+    return lastThrow;
   }
 
   // ----- X01 GAME -----

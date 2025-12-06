@@ -14,15 +14,18 @@
     </form>
 
     <h3>Players</h3>
-    <div class="players-list">
-      <div *ngFor="let player of players; let i = index" class="player-item">
-        <span>{{ player.name }}</span>
-        <button type="button" (click)="removePlayer(i)" *ngIf="players.length > 1">Remove</button>
-      </div>
+    <div *ngIf="players.length === 0" class="player-mode-select">
+      <button type="button" (click)="addPlayer('Player 1'); addPlayer('Player 2')" class="mode-btn">Add Players</button>
     </div>
-    <div class="add-player">
-      <input type="text" [(ngModel)]="newPlayerName" placeholder="Player name" (keyup.enter)="addPlayer()" />
-      <button type="button" (click)="addPlayer()">Add Player</button>
+    
+    <div *ngIf="players.length > 0">
+      <div class="players-list">
+        <div *ngFor="let player of players; let i = index" class="player-item">
+          <input type="text" [(ngModel)]="player.name" [placeholder]="'Player ' + (i + 1)" />
+          <button type="button" (click)="removePlayer(i)" *ngIf="players.length > 1">Remove</button>
+        </div>
+      </div>
+      <button type="button" (click)="addPlayer()" class="add-more-btn" *ngIf="players.length > 1">Add Player</button>
     </div>
     
     <button type="button" (click)="startGame()" class="start-btn">Start Game</button>

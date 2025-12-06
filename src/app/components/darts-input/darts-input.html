@@ -3,21 +3,21 @@
   <div *ngIf="game.inputMode === 'dart-by-dart'" class="dart-button-layout">
     <!-- Dart Display -->
     <div class="dart-display">
-      <div class="dart-field" [class.active]="game.currentDart === 1">
+      <div class="dart-field" [class.active]="game.getCurrentDartInRound() === 1">
         <span class="dart-label">Dart 1</span>
         <span class="dart-value">{{ getDartDisplay(1) }}</span>
       </div>
-      <div class="dart-field" [class.active]="game.currentDart === 2">
+      <div class="dart-field" [class.active]="game.getCurrentDartInRound() === 2">
         <span class="dart-label">Dart 2</span>
         <span class="dart-value">{{ getDartDisplay(2) }}</span>
       </div>
-      <div class="dart-field" [class.active]="game.currentDart === 3">
+      <div class="dart-field" [class.active]="game.getCurrentDartInRound() === 3">
         <span class="dart-label">Dart 3</span>
         <span class="dart-value">{{ getDartDisplay(3) }}</span>
       </div>
     </div>
     
-    <p class="round-total" *ngIf="game.currentDart > 1">Round Total: {{ game.getRoundTotal() }}</p>
+    <p class="round-total" *ngIf="game.getCurrentDartInRound() > 1">Round Total: {{ game.getRoundTotal() }}</p>
 
     <!-- Unified Button Grid -->
     <div class="unified-grid">
@@ -51,7 +51,7 @@
       <button type="button" class="grid-btn" [class.selected]="selectedMultiplier !== 1 && selectedMultiplier !== 25 && selectedMultiplier !== 50" (click)="selectNumber(5)">5</button>
       
       <!-- Row 5: Undo, 4, 3, 2, 1 -->
-      <button type="button" class="grid-btn undo-btn" [disabled]="game.currentDart === 1" (click)="undoLastDart()">Undo</button>
+      <button type="button" class="grid-btn undo-btn" [disabled]="game.throwHistory.length === 0" (click)="undoLastDart()">Undo</button>
       <button type="button" class="grid-btn" [class.selected]="selectedMultiplier !== 1 && selectedMultiplier !== 25 && selectedMultiplier !== 50" (click)="selectNumber(4)">4</button>
       <button type="button" class="grid-btn" [class.selected]="selectedMultiplier !== 1 && selectedMultiplier !== 25 && selectedMultiplier !== 50" (click)="selectNumber(3)">3</button>
       <button type="button" class="grid-btn" [class.selected]="selectedMultiplier !== 1 && selectedMultiplier !== 25 && selectedMultiplier !== 50" (click)="selectNumber(2)">2</button>
@@ -75,13 +75,16 @@
       <button type="button" class="num-btn" (click)="appendNumber('5')">5</button>
       <button type="button" class="num-btn" (click)="appendNumber('6')">6</button>
       
-      <button type="button" class="num-btn" (click)="appendNumber('7')">7</button>
-      <button type="button" class="num-btn" (click)="appendNumber('8')">8</button>
-      <button type="button" class="num-btn" (click)="appendNumber('9')">9</button>
+      <button type="button" class="num-btn" (click)="appendNumber('7')" [disabled]="showUndoConfirm">7</button>
+      <button type="button" class="num-btn" (click)="appendNumber('8')" [disabled]="showUndoConfirm">8</button>
+      <button type="button" class="num-btn" (click)="appendNumber('9')" [disabled]="showUndoConfirm">9</button>
       
-      <button type="button" class="num-btn clear-btn" (click)="clearVisitScore()">C</button>
-      <button type="button" class="num-btn" (click)="appendNumber('0')">0</button>
-      <button type="button" class="num-btn submit-btn" (click)="submitVisit()">✓</button>
+      <button type="button" class="num-btn" [class.clear-btn]="visitScore" [class.undo-btn]="!visitScore" (click)="clearOrUndo()">
+        <span *ngIf="!showUndoConfirm">C/U</span>
+        <span *ngIf="showUndoConfirm" style="font-size: 0.8em;">Undo?</span>
+      </button>
+      <button type="button" class="num-btn" (click)="appendNumber('0')" [disabled]="showUndoConfirm">0</button>
+      <button type="button" class="num-btn submit-btn" (click)="submitVisit()" [disabled]="showUndoConfirm">✓</button>
     </div>
   </div>
 </div>
