@@ -19,57 +19,43 @@
     
     <p class="round-total" *ngIf="game.currentDart > 1">Round Total: {{ game.getRoundTotal() }}</p>
 
-    <!-- Score Input Buttons -->
-    <div class="score-input-grid">
-      <!-- Multipliers Column (left side) -->
-      <div class="multipliers-column">
-        <button 
-          type="button" 
-          class="multiplier-btn" 
-          [class.selected]="selectedMultiplier === 3"
-          (click)="selectMultiplier(3)">
-          T
-        </button>
-        <button 
-          type="button" 
-          class="multiplier-btn" 
-          [class.selected]="selectedMultiplier === 2"
-          (click)="selectMultiplier(2)">
-          D
-        </button>
-        <button 
-          type="button" 
-          class="multiplier-btn bull-btn" 
-          [class.selected]="selectedMultiplier === 50"
-          (click)="selectMultiplier(50)">
-          DB
-        </button>
-        <button 
-          type="button" 
-          class="multiplier-btn bull-btn" 
-          [class.selected]="selectedMultiplier === 25"
-          (click)="selectMultiplier(25)">
-          SB
-        </button>
-        <button 
-          type="button" 
-          class="multiplier-btn miss-btn" 
-          (click)="selectNumber(0)">
-          Miss
-        </button>
-      </div>
-
-      <!-- Numbers Grid -->
-      <div class="numbers-grid">
-        <button 
-          *ngFor="let num of numbers" 
-          type="button" 
-          class="number-btn"
-          [class.selected]="selectedMultiplier !== 1 && selectedMultiplier !== 25 && selectedMultiplier !== 50"
-          (click)="selectNumber(num)">
-          {{ num }}
-        </button>
-      </div>
+    <!-- Unified Button Grid -->
+    <div class="unified-grid">
+      <!-- Row 1: SB, 20, 19, 18, 17 -->
+      <button type="button" class="grid-btn bull-btn" [class.selected]="selectedMultiplier === 25 || selectedMultiplier === 50" (click)="toggleBull()">{{ bullMode === 'single' ? 'SB' : 'DB' }}</button>
+      <button type="button" class="grid-btn" [class.selected]="selectedMultiplier !== 1 && selectedMultiplier !== 25 && selectedMultiplier !== 50" (click)="selectNumber(20)">20</button>
+      <button type="button" class="grid-btn" [class.selected]="selectedMultiplier !== 1 && selectedMultiplier !== 25 && selectedMultiplier !== 50" (click)="selectNumber(19)">19</button>
+      <button type="button" class="grid-btn" [class.selected]="selectedMultiplier !== 1 && selectedMultiplier !== 25 && selectedMultiplier !== 50" (click)="selectNumber(18)">18</button>
+      <button type="button" class="grid-btn" [class.selected]="selectedMultiplier !== 1 && selectedMultiplier !== 25 && selectedMultiplier !== 50" (click)="selectNumber(17)">17</button>
+      
+      <!-- Row 2: T, 16, 15, 14, 13 -->
+      <button type="button" class="grid-btn" [class.selected]="selectedMultiplier === 3" (click)="selectMultiplier(3)">T</button>
+      <button type="button" class="grid-btn" [class.selected]="selectedMultiplier !== 1 && selectedMultiplier !== 25 && selectedMultiplier !== 50" (click)="selectNumber(16)">16</button>
+      <button type="button" class="grid-btn" [class.selected]="selectedMultiplier !== 1 && selectedMultiplier !== 25 && selectedMultiplier !== 50" (click)="selectNumber(15)">15</button>
+      <button type="button" class="grid-btn" [class.selected]="selectedMultiplier !== 1 && selectedMultiplier !== 25 && selectedMultiplier !== 50" (click)="selectNumber(14)">14</button>
+      <button type="button" class="grid-btn" [class.selected]="selectedMultiplier !== 1 && selectedMultiplier !== 25 && selectedMultiplier !== 50" (click)="selectNumber(13)">13</button>
+      
+      
+      <!-- Row 3: D, 12, 11, 10, 9 -->
+      <button type="button" class="grid-btn" [class.selected]="selectedMultiplier === 2" (click)="selectMultiplier(2)">D</button>
+      <button type="button" class="grid-btn" [class.selected]="selectedMultiplier !== 1 && selectedMultiplier !== 25 && selectedMultiplier !== 50" (click)="selectNumber(12)">12</button>
+      <button type="button" class="grid-btn" [class.selected]="selectedMultiplier !== 1 && selectedMultiplier !== 25 && selectedMultiplier !== 50" (click)="selectNumber(11)">11</button>
+      <button type="button" class="grid-btn" [class.selected]="selectedMultiplier !== 1 && selectedMultiplier !== 25 && selectedMultiplier !== 50" (click)="selectNumber(10)">10</button>
+      <button type="button" class="grid-btn" [class.selected]="selectedMultiplier !== 1 && selectedMultiplier !== 25 && selectedMultiplier !== 50" (click)="selectNumber(9)">9</button>
+      
+      <!-- Row 4: Miss, 8, 7, 6, 5 -->
+      <button type="button" class="grid-btn miss-btn" (click)="selectNumber(0)">Miss</button>
+      <button type="button" class="grid-btn" [class.selected]="selectedMultiplier !== 1 && selectedMultiplier !== 25 && selectedMultiplier !== 50" (click)="selectNumber(8)">8</button>
+      <button type="button" class="grid-btn" [class.selected]="selectedMultiplier !== 1 && selectedMultiplier !== 25 && selectedMultiplier !== 50" (click)="selectNumber(7)">7</button>
+      <button type="button" class="grid-btn" [class.selected]="selectedMultiplier !== 1 && selectedMultiplier !== 25 && selectedMultiplier !== 50" (click)="selectNumber(6)">6</button>
+      <button type="button" class="grid-btn" [class.selected]="selectedMultiplier !== 1 && selectedMultiplier !== 25 && selectedMultiplier !== 50" (click)="selectNumber(5)">5</button>
+      
+      <!-- Row 5: Undo, 4, 3, 2, 1 -->
+      <button type="button" class="grid-btn undo-btn" [disabled]="game.currentDart === 1" (click)="undoLastDart()">Undo</button>
+      <button type="button" class="grid-btn" [class.selected]="selectedMultiplier !== 1 && selectedMultiplier !== 25 && selectedMultiplier !== 50" (click)="selectNumber(4)">4</button>
+      <button type="button" class="grid-btn" [class.selected]="selectedMultiplier !== 1 && selectedMultiplier !== 25 && selectedMultiplier !== 50" (click)="selectNumber(3)">3</button>
+      <button type="button" class="grid-btn" [class.selected]="selectedMultiplier !== 1 && selectedMultiplier !== 25 && selectedMultiplier !== 50" (click)="selectNumber(2)">2</button>
+      <button type="button" class="grid-btn" [class.selected]="selectedMultiplier !== 1 && selectedMultiplier !== 25 && selectedMultiplier !== 50" (click)="selectNumber(1)">1</button>
     </div>
   </div>
   

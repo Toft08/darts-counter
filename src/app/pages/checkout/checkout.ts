@@ -21,7 +21,7 @@ interface Player {
   imports: [CommonModule, FormsModule, DartsInputComponent]
 })
 export class CheckoutComponent {
-  startNumber: number = 40;
+  startNumber: number = 81;
   trainingStarted: boolean = false;
   status: string = '';
   players: Player[] = [];

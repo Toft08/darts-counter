@@ -56,21 +56,16 @@
   margin: 0 0 10px 0;
 }
 
-// Score Input Grid
-.score-input-grid {
-  display: flex;
-  gap: 10px;
-}
-
-.multipliers-column {
-  display: flex;
-  flex-direction: column;
+// Unified Grid Layout (5 columns total: 1 feature + 4 numbers)
+.unified-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
   gap: 8px;
-  min-width: 70px;
 
-  .multiplier-btn {
-    padding: 15px 10px;
-    font-size: 1.1em;
+  .grid-btn {
+    aspect-ratio: 1;
+    padding: 10px;
+    font-size: 1.2em;
     font-weight: bold;
     border: 2px solid #ddd;
     border-radius: 8px;
@@ -78,10 +73,18 @@
     color: #333;
     cursor: pointer;
     transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    &:hover {
+    &:hover:not(:disabled) {
       background: #f0f0f0;
       border-color: #999;
+      transform: scale(1.05);
+    }
+
+    &:active:not(:disabled) {
+      transform: scale(0.95);
     }
 
     &.selected {
@@ -99,6 +102,10 @@
         border-color: #ff9800;
         color: white;
       }
+
+      &:hover:not(:disabled) {
+        background: #ffb300;
+      }
     }
 
     &.miss-btn {
@@ -109,43 +116,19 @@
         background: #c82333;
       }
     }
-  }
-}
 
-.numbers-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-  flex: 1;
+    &.undo-btn {
+      background: #6c757d;
+      color: white;
 
-  .number-btn {
-    aspect-ratio: 1;
-    padding: 10px;
-    font-size: 1.2em;
-    font-weight: bold;
-    border: 2px solid #ddd;
-    border-radius: 8px;
-    background: white;
-    color: #333;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+      &:hover:not(:disabled) {
+        background: #5a6268;
+      }
 
-    &:hover {
-      background: #f0f0f0;
-      border-color: #999;
-      transform: scale(1.05);
-    }
-
-    &:active {
-      transform: scale(0.95);
-    }
-
-    &.selected {
-      background: #e3f2fd;
-      border-color: #667eea;
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
     }
   }
 }

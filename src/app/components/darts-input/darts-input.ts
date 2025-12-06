@@ -15,7 +15,8 @@ export class DartsInputComponent {
     @Output() onDartSubmit = new EventEmitter<number>();
 
     // Dart by dart mode - button layout
-    selectedMultiplier: number = 1; // 1=single, 2=double, 3=triple, 25=bull
+    selectedMultiplier: number = 1; // 1=single, 2=double, 3=triple, 25=bull, 50=double bull
+    bullMode: 'single' | 'double' = 'single'; // Track which bull mode
     dart1Value: number | null = null;
     dart2Value: number | null = null;
     dart3Value: number | null = null;
@@ -28,7 +29,50 @@ export class DartsInputComponent {
     constructor(public game: GameService) {}
 
     selectMultiplier(mult: number) {
-        this.selectedMultiplier = mult;
+        // Toggle off if clicking the same multiplier
+        if (this.selectedMultiplier === mult) {
+            this.selectedMultiplier = 1;
+        } else {
+            this.selectedMultiplier = mult;
+        }
+    }
+
+    toggleBull() {
+        if (this.bullMode === 'single') {
+            this.bullMode = 'double';
+            this.selectedMultiplier = 50;
+        } else {
+            this.bullMode = 'single';
+            this.selectedMultiplier = 25;
+        }
+    }
+
+    undoLastDart() {
+        if (this.game.currentDart === 1) {
+            // Can't undo if no darts thrown yet
+            return;
+        }
+        
+        // Move back one dart
+        this.game.currentDart--;
+        
+        // Clear the display for that dart
+        if (this.game.currentDart === 1) {
+            this.dart1Value = null;
+        } else if (this.game.currentDart === 2) {
+            this.dart2Value = null;
+        } else if (this.game.currentDart === 3) {
+            this.dart3Value = null;
+        }
+        
+        // Emit negative score to subtract from game
+        const lastDartValue = this.game.currentDart === 1 ? 
+            (this.game.dart1 || 0) : 
+            this.game.currentDart === 2 ? 
+            (this.game.dart2 || 0) : 
+            (this.game.dart3 || 0);
+        
+        this.onDartSubmit.emit(-lastDartValue);
     }
 
     selectNumber(num: number) {
@@ -62,6 +106,7 @@ export class DartsInputComponent {
 
         // Reset multiplier to single for next dart
         this.selectedMultiplier = 1;
+        this.bullMode = 'single';
 
         // Reset display when starting new round
         if (this.game.currentDart === 1) {
