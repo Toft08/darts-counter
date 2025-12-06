@@ -1,0 +1,269 @@
+.darts-input-container {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.dart-button-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+// Dart Display (3 fields showing current dart values)
+.dart-display {
+  display: flex;
+  justify-content: space-around;
+  gap: 10px;
+  margin-bottom: 10px;
+
+  .dart-field {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 15px;
+    background: #f5f5f5;
+    border: 3px solid #ddd;
+    border-radius: 10px;
+    transition: all 0.3s;
+
+    &.active {
+      border-color: #667eea;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    }
+
+    .dart-label {
+      font-size: 0.9em;
+      color: #666;
+      margin-bottom: 5px;
+    }
+
+    .dart-value {
+      font-size: 2em;
+      font-weight: bold;
+      color: #333;
+    }
+  }
+}
+
+.round-total {
+  text-align: center;
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #667eea;
+  margin: 0 0 10px 0;
+}
+
+// Score Input Grid
+.score-input-grid {
+  display: flex;
+  gap: 10px;
+}
+
+.multipliers-column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 70px;
+
+  .multiplier-btn {
+    padding: 15px 10px;
+    font-size: 1.1em;
+    font-weight: bold;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      background: #f0f0f0;
+      border-color: #999;
+    }
+
+    &.selected {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+
+    &.bull-btn {
+      background: #ffc107;
+      color: #333;
+
+      &.selected {
+        background: #ff9800;
+        border-color: #ff9800;
+        color: white;
+      }
+    }
+
+    &.miss-btn {
+      background: #dc3545;
+      color: white;
+
+      &:hover {
+        background: #c82333;
+      }
+    }
+  }
+}
+
+.numbers-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  flex: 1;
+
+  .number-btn {
+    aspect-ratio: 1;
+    padding: 10px;
+    font-size: 1.2em;
+    font-weight: bold;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background: #f0f0f0;
+      border-color: #999;
+      transform: scale(1.05);
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    &.selected {
+      background: #e3f2fd;
+      border-color: #667eea;
+    }
+  }
+}
+
+// Per Visit Mode
+.per-visit-mode {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  max-width: 400px;
+  margin: 0 auto;
+
+  .visit-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background: #f5f5f5;
+    border: 3px solid #667eea;
+    border-radius: 12px;
+
+    .visit-label {
+      font-size: 0.9em;
+      color: #666;
+      margin-bottom: 8px;
+    }
+
+    .visit-value {
+      font-size: 3em;
+      font-weight: bold;
+      color: #333;
+      min-height: 1.2em;
+    }
+  }
+
+  .numpad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+
+    .num-btn {
+      aspect-ratio: 1;
+      padding: 20px;
+      font-size: 1.8em;
+      font-weight: bold;
+      border: 2px solid #ddd;
+      border-radius: 12px;
+      background: white;
+      color: #333;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &:hover {
+        background: #f0f0f0;
+        border-color: #999;
+        transform: scale(1.05);
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
+
+      &.clear-btn {
+        background: #dc3545;
+        color: white;
+        border-color: #dc3545;
+
+        &:hover {
+          background: #c82333;
+          border-color: #c82333;
+        }
+      }
+
+      &.submit-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-color: #667eea;
+        font-size: 2em;
+
+        &:hover {
+          transform: scale(1.08);
+        }
+      }
+    }
+  }
+}
+
+// Mobile responsiveness
+@media (max-width: 600px) {
+  .dart-display {
+    .dart-field {
+      padding: 10px;
+
+      .dart-value {
+        font-size: 1.5em;
+      }
+    }
+  }
+
+  .multipliers-column {
+    min-width: 60px;
+
+    .multiplier-btn {
+      padding: 12px 8px;
+      font-size: 1em;
+    }
+  }
+
+  .numbers-grid {
+    gap: 6px;
+
+    .number-btn {
+      font-size: 1em;
+      padding: 8px;
+    }
+  }
+}

@@ -1,35 +1,101 @@
 <div class="darts-input-container">
-  <!-- Dart by Dart Mode -->
-  <div *ngIf="game.inputMode === 'dart-by-dart'">
-    <p>Dart {{ game.currentDart }} of 3</p>
-    <p *ngIf="game.currentDart > 1">Round Total: {{ game.getRoundTotal() }}</p>
-    
-    <div class="dart-input">
-      <label>Score:
-        <select [(ngModel)]="dartNumber" name="dartNumber">
-          <option [value]="0">Miss (0)</option>
-          <option *ngFor="let n of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]" [value]="n">{{ n }}</option>
-          <option [value]="25">Bull (25)</option>
-        </select>
-      </label>
-      
-      <label>Multiplier:
-        <select [(ngModel)]="dartMultiplier" name="dartMultiplier">
-          <option [value]="1">Single</option>
-          <option [value]="2" [disabled]="dartNumber === 25">Double</option>
-          <option [value]="3" [disabled]="dartNumber === 25 || dartNumber === 0">Triple</option>
-        </select>
-      </label>
+  <!-- Dart by Dart Mode with Button Layout -->
+  <div *ngIf="game.inputMode === 'dart-by-dart'" class="dart-button-layout">
+    <!-- Dart Display -->
+    <div class="dart-display">
+      <div class="dart-field" [class.active]="game.currentDart === 1">
+        <span class="dart-label">Dart 1</span>
+        <span class="dart-value">{{ getDartDisplay(1) }}</span>
+      </div>
+      <div class="dart-field" [class.active]="game.currentDart === 2">
+        <span class="dart-label">Dart 2</span>
+        <span class="dart-value">{{ getDartDisplay(2) }}</span>
+      </div>
+      <div class="dart-field" [class.active]="game.currentDart === 3">
+        <span class="dart-label">Dart 3</span>
+        <span class="dart-value">{{ getDartDisplay(3) }}</span>
+      </div>
     </div>
     
-    <button type="button" (click)="submitDartByNumber()">Submit Dart {{ game.currentDart }}</button>
+    <p class="round-total" *ngIf="game.currentDart > 1">Round Total: {{ game.getRoundTotal() }}</p>
+
+    <!-- Score Input Buttons -->
+    <div class="score-input-grid">
+      <!-- Multipliers Column (left side) -->
+      <div class="multipliers-column">
+        <button 
+          type="button" 
+          class="multiplier-btn" 
+          [class.selected]="selectedMultiplier === 3"
+          (click)="selectMultiplier(3)">
+          T
+        </button>
+        <button 
+          type="button" 
+          class="multiplier-btn" 
+          [class.selected]="selectedMultiplier === 2"
+          (click)="selectMultiplier(2)">
+          D
+        </button>
+        <button 
+          type="button" 
+          class="multiplier-btn bull-btn" 
+          [class.selected]="selectedMultiplier === 50"
+          (click)="selectMultiplier(50)">
+          DB
+        </button>
+        <button 
+          type="button" 
+          class="multiplier-btn bull-btn" 
+          [class.selected]="selectedMultiplier === 25"
+          (click)="selectMultiplier(25)">
+          SB
+        </button>
+        <button 
+          type="button" 
+          class="multiplier-btn miss-btn" 
+          (click)="selectNumber(0)">
+          Miss
+        </button>
+      </div>
+
+      <!-- Numbers Grid -->
+      <div class="numbers-grid">
+        <button 
+          *ngFor="let num of numbers" 
+          type="button" 
+          class="number-btn"
+          [class.selected]="selectedMultiplier !== 1 && selectedMultiplier !== 25 && selectedMultiplier !== 50"
+          (click)="selectNumber(num)">
+          {{ num }}
+        </button>
+      </div>
+    </div>
   </div>
   
-  <!-- Per Turn Mode -->
-  <div *ngIf="game.inputMode === 'per-turn'">
-    <label>Enter Turn Score (3 darts):
-      <input type="number" [(ngModel)]="turnScore" name="turnScore" min="0" max="180" (keyup.enter)="submitTurn()" />
-    </label>
-    <button type="button" (click)="submitTurn()">Submit Turn</button>
+  <!-- Per Visit Mode -->
+  <div *ngIf="game.inputMode === 'per-turn'" class="per-visit-mode">
+    <div class="visit-display">
+      <span class="visit-label">Visit Score</span>
+      <span class="visit-value">{{ visitScore || '0' }}</span>
+    </div>
+
+    <div class="numpad">
+      <button type="button" class="num-btn" (click)="appendNumber('1')">1</button>
+      <button type="button" class="num-btn" (click)="appendNumber('2')">2</button>
+      <button type="button" class="num-btn" (click)="appendNumber('3')">3</button>
+      
+      <button type="button" class="num-btn" (click)="appendNumber('4')">4</button>
+      <button type="button" class="num-btn" (click)="appendNumber('5')">5</button>
+      <button type="button" class="num-btn" (click)="appendNumber('6')">6</button>
+      
+      <button type="button" class="num-btn" (click)="appendNumber('7')">7</button>
+      <button type="button" class="num-btn" (click)="appendNumber('8')">8</button>
+      <button type="button" class="num-btn" (click)="appendNumber('9')">9</button>
+      
+      <button type="button" class="num-btn clear-btn" (click)="clearVisitScore()">C</button>
+      <button type="button" class="num-btn" (click)="appendNumber('0')">0</button>
+      <button type="button" class="num-btn submit-btn" (click)="submitVisit()">✓</button>
+    </div>
   </div>
 </div>
