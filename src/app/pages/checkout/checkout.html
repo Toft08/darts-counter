@@ -1,7 +1,5 @@
 
 <div class="checkout-container">
-  <h2>Checkout Training</h2>
-  
   <div *ngIf="!trainingStarted">
     <h3>Setup</h3>
     <form>
@@ -29,24 +27,28 @@
   </div>
   
   <div *ngIf="trainingStarted">
-    <div class="scoreboard">
-      <h3>Progress</h3>
-      <div *ngFor="let player of players; let i = index" class="score-row" [class.active]="i === currentPlayerIndex" [class.failed]="player.failed">
-        <span class="player-name">{{ player.name }}</span>
-        <span class="player-target"> Target: {{ player.target }}</span>
-        <span class="player-darts"> Darts: {{ player.dartsThrown }}/9</span>
-        <span class="player-checkouts">✓ {{ player.checkouts }}</span>
-      </div>
-    </div>
-
-    <div class="current-turn">
-      <h3>Current Turn: {{ currentPlayer.name }}</h3>
-      <p> Current left: {{ currentPlayer.score }}</p>
+    <!-- Player Cards Section -->
+    <div class="player-cards-section">
+      <app-player-card 
+        *ngFor="let player of players; let i = index"
+        [playerName]="player.name"
+        [score]="player.score"
+        [isActive]="i === currentPlayerIndex"
+        [lastDarts]="player.lastDarts"
+        [failed]="player.failed"
+        [target]="player.target"
+        [dartsThrown]="player.dartsThrown"
+        [checkouts]="player.checkouts"
+        [dartsInputRef]="dartsInput">
+      </app-player-card>
     </div>
     
-    <app-darts-input 
-      [currentScore]="currentPlayer.score" 
-      (onDartSubmit)="onDartSubmit($event)">
-    </app-darts-input>
+    <!-- Unified Input Grid at Bottom -->
+    <div class="input-section">
+      <app-darts-input 
+        [currentScore]="currentPlayer.score" 
+        (onDartSubmit)="onDartSubmit($event)">
+      </app-darts-input>
+    </div>
   </div>
 </div>

@@ -1,24 +1,6 @@
 <div class="darts-input-container">
   <!-- Dart by Dart Mode with Button Layout -->
   <div *ngIf="game.inputMode === 'dart-by-dart'" class="dart-button-layout">
-    <!-- Dart Display -->
-    <div class="dart-display">
-      <div class="dart-field" [class.active]="game.getCurrentDartInRound() === 1">
-        <span class="dart-label">Dart 1</span>
-        <span class="dart-value">{{ getDartDisplay(1) }}</span>
-      </div>
-      <div class="dart-field" [class.active]="game.getCurrentDartInRound() === 2">
-        <span class="dart-label">Dart 2</span>
-        <span class="dart-value">{{ getDartDisplay(2) }}</span>
-      </div>
-      <div class="dart-field" [class.active]="game.getCurrentDartInRound() === 3">
-        <span class="dart-label">Dart 3</span>
-        <span class="dart-value">{{ getDartDisplay(3) }}</span>
-      </div>
-    </div>
-    
-    <p class="round-total" *ngIf="game.getCurrentDartInRound() > 1">Round Total: {{ game.getRoundTotal() }}</p>
-
     <!-- Unified Button Grid -->
     <div class="unified-grid">
       <!-- Row 1: SB, 20, 19, 18, 17 -->
@@ -61,11 +43,6 @@
   
   <!-- Per Visit Mode -->
   <div *ngIf="game.inputMode === 'per-turn'" class="per-visit-mode">
-    <div class="visit-display">
-      <span class="visit-label">Visit Score</span>
-      <span class="visit-value">{{ visitScore || '0' }}</span>
-    </div>
-
     <div class="numpad">
       <button type="button" class="num-btn" (click)="appendNumber('1')">1</button>
       <button type="button" class="num-btn" (click)="appendNumber('2')">2</button>

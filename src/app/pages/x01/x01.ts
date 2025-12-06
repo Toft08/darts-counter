@@ -1,23 +1,27 @@
 
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GameService } from '../../services/game';
 import { DartsInputComponent } from '../../components/darts-input/darts-input';
+import { PlayerCardComponent } from '../../components/player-card/player-card';
 
 interface Player {
   name: string;
   score: number;
   legsWon: number;
+  lastDarts: [number, number, number]; // Last 3 darts thrown
 }
 
 @Component({
   selector: 'app-x01',
   templateUrl: './x01.html',
   standalone: true,
-  imports: [CommonModule, FormsModule, DartsInputComponent]
+  imports: [CommonModule, FormsModule, DartsInputComponent, PlayerCardComponent]
 })
 export class X01Component {
+  @ViewChild(DartsInputComponent) dartsInput!: DartsInputComponent;
+  
   startPoints: number = 501;
   legs: number = 1;
   gameStarted: boolean = false;
@@ -36,7 +40,8 @@ export class X01Component {
     this.players.push({
       name: playerName,
       score: this.startPoints,
-      legsWon: 0
+      legsWon: 0,
+      lastDarts: [0, 0, 0]
     });
     this.newPlayerName = '';
   }
@@ -64,7 +69,10 @@ export class X01Component {
   }
 
   nextPlayer() {
+    // Move to next player
     this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
+    
+    // Clear the dart displays for the new player
     this.game.resetRound();
   }
 
@@ -74,6 +82,14 @@ export class X01Component {
       const scoreToAddBack = Math.floor(Math.abs(dartScore)); // Use floor to handle decimal offset
       this.currentPlayer.score += scoreToAddBack;
       return; // Important: don't continue processing
+    }
+    
+    // CRITICAL: Store darts BEFORE submitting if this is the 3rd dart
+    // because submitDart() will reset them
+    const isThirdDart = this.game.inputMode === 'dart-by-dart' && this.game.getCurrentDartInRound() === 3;
+    let dartsBeforeSubmit: [number, number, number] = [0, 0, 0];
+    if (isThirdDart) {
+      dartsBeforeSubmit = [this.game.dart1, this.game.dart2, dartScore];
     }
     
     const result = this.game.inputMode === 'dart-by-dart' 
@@ -86,21 +102,17 @@ export class X01Component {
     }
 
     if (result.bust) {
-      // Bust just means the turn is over with no score change
-      // In dart-by-dart mode, move to next player immediately
-      // In per-visit mode, the turn is already over
-      if (this.game.inputMode === 'dart-by-dart') {
-        this.nextPlayer();
-      } else {
-        // Per-visit mode: just move to next player
-        this.nextPlayer();
-      }
+      // Store the darts that caused the bust (using pre-submit values if 3rd dart)
+      this.currentPlayer.lastDarts = isThirdDart ? dartsBeforeSubmit : [this.game.dart1, this.game.dart2, this.game.dart3];
+      this.nextPlayer();
       return;
     }
 
     this.currentPlayer.score = result.newScore;
 
     if (result.finished) {
+      // Store the winning darts
+      this.currentPlayer.lastDarts = isThirdDart ? dartsBeforeSubmit : [this.game.dart1, this.game.dart2, this.game.dart3];
       this.currentPlayer.legsWon++;
       
       // Check if this player won the match
@@ -114,7 +126,8 @@ export class X01Component {
         this.currentPlayerIndex = 0;
       }
     } else if (this.game.getCurrentDartInRound() === 1) {
-      // Turn finished (returned to dart 1), switch to next player
+      // Turn finished (returned to dart 1), use the pre-submit values we captured
+      this.currentPlayer.lastDarts = dartsBeforeSubmit;
       this.nextPlayer();
     }
   }

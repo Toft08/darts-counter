@@ -1,0 +1,45 @@
+<div class="player-card" 
+     [class.active]="isActive"
+     [class.failed]="failed">
+  
+  <!-- Header: Name and Score -->
+  <div class="card-header">
+    <span class="player-name">{{ playerName }}</span>
+    <span class="player-score">{{ score }}</span>
+  </div>
+  
+  <!-- Dart Display Row - for dart-by-dart mode (always visible) -->
+  <div class="dart-display" *ngIf="game.inputMode === 'dart-by-dart'">
+    <div class="dart-slot" [class.active]="isActive && game.getCurrentDartInRound() === 1">
+      <span class="dart-label">D1</span>
+      <span class="dart-value">{{ getDartDisplay(1) }}</span>
+    </div>
+    <div class="dart-slot" [class.active]="isActive && game.getCurrentDartInRound() === 2">
+      <span class="dart-label">D2</span>
+      <span class="dart-value">{{ getDartDisplay(2) }}</span>
+    </div>
+    <div class="dart-slot" [class.active]="isActive && game.getCurrentDartInRound() === 3">
+      <span class="dart-label">D3</span>
+      <span class="dart-value">{{ getDartDisplay(3) }}</span>
+    </div>
+  </div>
+  
+  <!-- Visit Display - for per-turn mode -->
+  <div class="visit-display" *ngIf="game.inputMode === 'per-turn'">
+    <span class="visit-label">Visit Score:</span>
+    <span class="visit-value">{{ getVisitScore() }}</span>
+  </div>
+  
+  <!-- Footer: Stats -->
+  <div class="card-footer">
+    <div class="footer-left">
+      <span *ngIf="legsWon !== undefined">Legs: {{ legsWon }}</span>
+      <span *ngIf="target !== undefined">Target: {{ target }}</span>
+      <span *ngIf="dartsThrown !== undefined">Darts: {{ dartsThrown }}/9</span>
+      <span *ngIf="checkouts !== undefined">✓ {{ checkouts }}</span>
+    </div>
+    <div class="round-total" *ngIf="isActive && game.inputMode === 'dart-by-dart' && game.getCurrentDartInRound() > 1">
+      {{ game.getRoundTotal() }}
+    </div>
+  </div>
+</div>

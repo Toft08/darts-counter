@@ -1,9 +1,10 @@
 
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GameService } from '../../services/game';
 import { DartsInputComponent } from '../../components/darts-input/darts-input';
+import { PlayerCardComponent } from '../../components/player-card/player-card';
 
 interface Player {
   name: string;
@@ -12,15 +13,18 @@ interface Player {
   checkouts: number;
   dartsThrown: number;
   failed: boolean;
+  lastDarts: [number, number, number];
 }
 
 @Component({
   selector: 'app-checkout',
   templateUrl: './checkout.html',
   standalone: true,
-  imports: [CommonModule, FormsModule, DartsInputComponent]
+  imports: [CommonModule, FormsModule, DartsInputComponent, PlayerCardComponent]
 })
 export class CheckoutComponent {
+  @ViewChild(DartsInputComponent) dartsInput!: DartsInputComponent;
+  
   startNumber: number = 81;
   trainingStarted: boolean = false;
   status: string = '';
@@ -43,7 +47,8 @@ export class CheckoutComponent {
       target: this.startNumber,
       checkouts: 0,
       dartsThrown: 0,
-      failed: false
+      failed: false,
+      lastDarts: [0, 0, 0]
     });
     this.newPlayerName = '';
   }
@@ -87,7 +92,10 @@ export class CheckoutComponent {
   }
 
   nextPlayer() {
+    // Move to next player
     this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.players.length;
+    
+    // Clear the dart displays for the new player
     this.game.resetRound();
   }
 
@@ -101,6 +109,14 @@ export class CheckoutComponent {
       const dartsToSubtract = isPerVisitUndo ? 3 : 1;
       this.currentPlayer.dartsThrown = Math.max(0, this.currentPlayer.dartsThrown - dartsToSubtract);
       return;
+    }
+    
+    // CRITICAL: Store darts BEFORE submitting if this is the 3rd dart
+    // because submitDart() will reset them
+    const isThirdDart = this.game.inputMode === 'dart-by-dart' && this.game.getCurrentDartInRound() === 3;
+    let dartsBeforeSubmit: [number, number, number] = [0, 0, 0];
+    if (isThirdDart) {
+      dartsBeforeSubmit = [this.game.dart1, this.game.dart2, dartScore];
     }
     
     const result = this.game.inputMode === 'dart-by-dart'
@@ -120,7 +136,8 @@ export class CheckoutComponent {
     }
 
     if (result.bust) {
-      // Bust just resets score and marks turn as failed
+      // Store the darts that caused the bust (using pre-submit values if 3rd dart)
+      this.currentPlayer.lastDarts = isThirdDart ? dartsBeforeSubmit : [this.game.dart1, this.game.dart2, this.game.dart3];
       this.currentPlayer.score = this.currentPlayer.target;
       this.currentPlayer.failed = true;
       this.checkRoundEnd();
@@ -130,6 +147,8 @@ export class CheckoutComponent {
     this.currentPlayer.score = result.newScore;
 
     if (result.finished) {
+      // Store the winning darts
+      this.currentPlayer.lastDarts = isThirdDart ? dartsBeforeSubmit : [this.game.dart1, this.game.dart2, this.game.dart3];
       this.currentPlayer.checkouts++;
       this.currentPlayer.target++;
       this.status = 'success';
@@ -139,7 +158,9 @@ export class CheckoutComponent {
         this.startNewRound();
       }, 100);
     } else if (this.game.getCurrentDartInRound() === 1 && this.game.inputMode === 'dart-by-dart') {
-      // Turn finished (3 darts thrown)
+      // Turn finished (3 darts thrown), use the pre-submit values we captured
+      this.currentPlayer.lastDarts = dartsBeforeSubmit;
+      
       if (this.currentPlayer.dartsThrown >= 9) {
         // Player has thrown 9 darts without finishing
         this.currentPlayer.failed = true;
