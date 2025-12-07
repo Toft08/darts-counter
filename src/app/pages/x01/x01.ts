@@ -16,6 +16,7 @@ interface Player {
 @Component({
   selector: 'app-x01',
   templateUrl: './x01.html',
+  styleUrls: ['./x01.scss'],
   standalone: true,
   imports: [CommonModule, FormsModule, DartsInputComponent, PlayerCardComponent]
 })

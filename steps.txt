@@ -1,0 +1,11 @@
+These are steps taken to get github static to work..
+Don't fully understand why the build pathbecomes wrong so this is a work around for now.
+
+1. Build 
+ng build --configuration production --base-href /darts-counter/ 
+
+2. Copy contents from browser move out to docks and remove browser
+cp -r docs/browser/* docs/ && rm -rf docs/browser
+
+3. Send to github
+git add -A && git commit -m "" && git push

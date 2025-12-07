@@ -19,6 +19,7 @@ interface Player {
 @Component({
   selector: 'app-checkout',
   templateUrl: './checkout.html',
+  styleUrls: ['./checkout.scss'],
   standalone: true,
   imports: [CommonModule, FormsModule, DartsInputComponent, PlayerCardComponent]
 })
