@@ -22,10 +22,10 @@
       <div class="players-list">
         <div *ngFor="let player of players; let i = index" class="player-item">
           <input type="text" [(ngModel)]="player.name" [placeholder]="'Player ' + (i + 1)" />
-          <button type="button" (click)="removePlayer(i)" *ngIf="players.length > 1">Remove</button>
+          <button type="button" (click)="removePlayer(i)">Remove</button>
         </div>
       </div>
-      <button type="button" (click)="addPlayer()" class="add-more-btn" *ngIf="players.length > 1">Add Player</button>
+      <button type="button" (click)="addPlayer()" class="add-more-btn">Add Player</button>
     </div>
     
     <button type="button" (click)="startTraining()" class="start-btn">Start Training</button>

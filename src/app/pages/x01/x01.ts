@@ -50,11 +50,9 @@ export class X01Component {
   }
 
   removePlayer(index: number) {
-    if (this.players.length > 1) {
-      this.players.splice(index, 1);
-      if (this.currentPlayerIndex >= this.players.length) {
-        this.currentPlayerIndex = 0;
-      }
+    this.players.splice(index, 1);
+    if (this.currentPlayerIndex >= this.players.length && this.players.length > 0) {
+      this.currentPlayerIndex = 0;
     }
   }
 
