@@ -27,6 +27,36 @@
       gap: 5px;
       font-weight: 500;
 
+      .preset-buttons {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+
+        .preset-btn {
+          flex: 1;
+          padding: 10px 15px;
+          background: #f8f9fa;
+          color: #333;
+          border: 2px solid #ddd;
+          border-radius: 8px;
+          cursor: pointer;
+          font-weight: 600;
+          font-size: 1em;
+          transition: all 0.2s;
+
+          &:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+          }
+
+          &.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+          }
+        }
+      }
+
       input, select {
         padding: 8px;
         border: 1px solid #ddd;

@@ -24,8 +24,10 @@ export class X01Component {
   @ViewChild(DartsInputComponent) dartsInput!: DartsInputComponent;
   
   startPoints: number = 501;
-  legs: number = 1;
+  legs: number = 3;
   gameStarted: boolean = false;
+  showManualInput: boolean = false;
+  showManualLegs: boolean = false;
   players: Player[] = [];
   newPlayerName: string = '';
   currentPlayerIndex: number = 0;

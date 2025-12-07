@@ -4,10 +4,23 @@
     <h3>Setup</h3>
     <form>
       <label>Start Points:
-        <input type="number" [(ngModel)]="startPoints" name="startPoints" min="101" max="1001" />
+        <div class="preset-buttons">
+          <button type="button" class="preset-btn" [class.selected]="startPoints === 170" (click)="startPoints = 170; showManualInput = false">170</button>
+          <button type="button" class="preset-btn" [class.selected]="startPoints === 301" (click)="startPoints = 301; showManualInput = false">301</button>
+          <button type="button" class="preset-btn" [class.selected]="startPoints === 501" (click)="startPoints = 501; showManualInput = false">501</button>
+          <button type="button" class="preset-btn" [class.selected]="startPoints === 701" (click)="startPoints = 701; showManualInput = false">701</button>
+          <button type="button" class="preset-btn" [class.selected]="showManualInput" (click)="showManualInput = !showManualInput">Manual</button>
+        </div>
+        <input *ngIf="showManualInput" type="number" [(ngModel)]="startPoints" name="startPoints" min="101" max="1001" placeholder="Enter custom points" />
       </label>
       <label>Legs (Best of):
-        <input type="number" [(ngModel)]="legs" name="legs" min="1" max="10" />
+        <div class="preset-buttons">
+          <button type="button" class="preset-btn" [class.selected]="legs === 1" (click)="legs = 1; showManualLegs = false">1</button>
+          <button type="button" class="preset-btn" [class.selected]="legs === 3" (click)="legs = 3; showManualLegs = false">3</button>
+          <button type="button" class="preset-btn" [class.selected]="legs === 5" (click)="legs = 5; showManualLegs = false">5</button>
+          <button type="button" class="preset-btn" [class.selected]="showManualLegs" (click)="showManualLegs = !showManualLegs">Manual</button>
+        </div>
+        <input *ngIf="showManualLegs" type="number" [(ngModel)]="legs" name="legs" min="1" max="10" placeholder="Enter custom legs" />
       </label>
     </form>
 

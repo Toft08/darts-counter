@@ -4,7 +4,12 @@
     <h3>Setup</h3>
     <form>
       <label>Start Number:
-        <input type="number" [(ngModel)]="startNumber" name="startNumber" min="2" max="170" />
+        <div class="preset-buttons">
+          <button type="button" class="preset-btn" [class.selected]="startNumber === 81" (click)="startNumber = 81; showManualInput = false">81</button>
+          <button type="button" class="preset-btn" [class.selected]="startNumber === 121" (click)="startNumber = 121; showManualInput = false">121</button>
+          <button type="button" class="preset-btn" [class.selected]="showManualInput" (click)="showManualInput = !showManualInput">Manual</button>
+        </div>
+        <input *ngIf="showManualInput" type="number" [(ngModel)]="startNumber" name="startNumber" min="2" max="170" placeholder="Enter custom number" />
       </label>
     </form>
 

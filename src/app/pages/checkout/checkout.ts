@@ -29,6 +29,7 @@ export class CheckoutComponent {
   startNumber: number = 81;
   trainingStarted: boolean = false;
   status: string = '';
+  showManualInput: boolean = false;
   players: Player[] = [];
   newPlayerName: string = '';
   currentPlayerIndex: number = 0;
