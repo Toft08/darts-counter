@@ -8,7 +8,6 @@
           <button type="button" class="preset-btn" [class.selected]="startPoints === 170" (click)="startPoints = 170; showManualInput = false">170</button>
           <button type="button" class="preset-btn" [class.selected]="startPoints === 301" (click)="startPoints = 301; showManualInput = false">301</button>
           <button type="button" class="preset-btn" [class.selected]="startPoints === 501" (click)="startPoints = 501; showManualInput = false">501</button>
-          <button type="button" class="preset-btn" [class.selected]="startPoints === 701" (click)="startPoints = 701; showManualInput = false">701</button>
           <button type="button" class="preset-btn" [class.selected]="showManualInput" (click)="showManualInput = !showManualInput">Manual</button>
         </div>
         <input *ngIf="showManualInput" type="number" [(ngModel)]="startPoints" name="startPoints" min="101" max="1001" placeholder="Enter custom points" />

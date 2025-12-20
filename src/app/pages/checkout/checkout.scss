@@ -1,7 +1,7 @@
 .checkout-container {
-  max-width: 800px;
+  max-width: fit-content;
   margin: 0 auto;
-  padding: 20px;
+  padding: 5px;
 
   h2 {
     text-align: center;
@@ -29,11 +29,15 @@
 
       .preset-buttons {
         display: flex;
+        flex-wrap: wrap;
         gap: 10px;
         margin-bottom: 10px;
+        max-width: 100%;
+        justify-content: flex-start;
 
         .preset-btn {
-          flex: 1;
+          flex: 0 1 auto;
+          min-width: 60px;
           padding: 10px 15px;
           background: #f8f9fa;
           color: #333;
@@ -43,6 +47,7 @@
           font-weight: 600;
           font-size: 1em;
           transition: all 0.2s;
+          white-space: nowrap;
 
           &:hover {
             background: #e9ecef;
