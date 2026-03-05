@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { GameService } from '../../services/game';
 import { DartsInputComponent } from '../../components/darts-input/darts-input';
 import { PlayerCardComponent } from '../../components/player-card/player-card';
+import { DartThrow, isSyntheticThrow } from '../../models/dart-throw.model';
 
 interface Player {
   name: string;
@@ -77,25 +78,20 @@ export class X01Component {
     this.game.resetRound();
   }
 
-  onDartSubmit(dartScore: number) {
-    // Handle undo (negative score means add back)
-    if (dartScore < 0) {
-      const scoreToAddBack = Math.floor(Math.abs(dartScore)); // Use floor to handle decimal offset
-      this.currentPlayer.score += scoreToAddBack;
-      return; // Important: don't continue processing
-    }
-    
-    // CRITICAL: Store darts BEFORE submitting if this is the 3rd dart
-    // because submitDart() will reset them
-    const isThirdDart = this.game.inputMode === 'dart-by-dart' && this.game.getCurrentDartInRound() === 3;
+  onDartThrown(dart: DartThrow) {
+    const isPerTurn = isSyntheticThrow(dart);
+
+    // Capture dart values before submit when this is the 3rd dart,
+    // because submitDart() resets game.dart1/2/3 after the round.
+    const isThirdDart = !isPerTurn && this.game.getCurrentDartInRound() === 3;
     let dartsBeforeSubmit: [number, number, number] = [0, 0, 0];
     if (isThirdDart) {
-      dartsBeforeSubmit = [this.game.dart1, this.game.dart2, dartScore];
+      dartsBeforeSubmit = [this.game.dart1, this.game.dart2, dart.score];
     }
-    
-    const result = this.game.inputMode === 'dart-by-dart' 
-      ? this.game.submitDart(dartScore, this.currentPlayer.score)
-      : this.game.submitTurn(dartScore, this.currentPlayer.score);
+
+    const result = isPerTurn
+      ? this.game.submitTurn(dart.score, this.currentPlayer.score)
+      : this.game.submitDart(dart, this.currentPlayer.score);
 
     if (!result.valid) {
       alert('Invalid score! Must be between 0-180');
@@ -103,7 +99,6 @@ export class X01Component {
     }
 
     if (result.bust) {
-      // Store the darts that caused the bust (using pre-submit values if 3rd dart)
       this.currentPlayer.lastDarts = isThirdDart ? dartsBeforeSubmit : [this.game.dart1, this.game.dart2, this.game.dart3];
       this.nextPlayer();
       return;
@@ -112,11 +107,9 @@ export class X01Component {
     this.currentPlayer.score = result.newScore;
 
     if (result.finished) {
-      // Store the winning darts
       this.currentPlayer.lastDarts = isThirdDart ? dartsBeforeSubmit : [this.game.dart1, this.game.dart2, this.game.dart3];
       this.currentPlayer.legsWon++;
-      
-      // Check if this player won the match
+
       const legsNeeded = Math.ceil(this.legs / 2);
       if (this.currentPlayer.legsWon >= legsNeeded) {
         alert(`🎉 ${this.currentPlayer.name} wins the match!`);
@@ -127,9 +120,13 @@ export class X01Component {
         this.currentPlayerIndex = 0;
       }
     } else if (this.game.getCurrentDartInRound() === 1) {
-      // Turn finished (returned to dart 1), use the pre-submit values we captured
+      // Turn finished (returned to dart 1); use pre-submit values
       this.currentPlayer.lastDarts = dartsBeforeSubmit;
       this.nextPlayer();
     }
+  }
+
+  onUndoDart(dart: DartThrow) {
+    this.currentPlayer.score += dart.score;
   }
 }

@@ -1,0 +1,25 @@
+<div class="per-visit-mode">
+  <div class="numpad">
+    <button type="button" class="num-btn" (click)="appendNumber('1')">1</button>
+    <button type="button" class="num-btn" (click)="appendNumber('2')">2</button>
+    <button type="button" class="num-btn" (click)="appendNumber('3')">3</button>
+
+    <button type="button" class="num-btn" (click)="appendNumber('4')">4</button>
+    <button type="button" class="num-btn" (click)="appendNumber('5')">5</button>
+    <button type="button" class="num-btn" (click)="appendNumber('6')">6</button>
+
+    <button type="button" class="num-btn" (click)="appendNumber('7')" [disabled]="showUndoConfirm">7</button>
+    <button type="button" class="num-btn" (click)="appendNumber('8')" [disabled]="showUndoConfirm">8</button>
+    <button type="button" class="num-btn" (click)="appendNumber('9')" [disabled]="showUndoConfirm">9</button>
+
+    <button type="button" class="num-btn"
+      [class.clear-btn]="visitScore"
+      [class.undo-btn]="!visitScore"
+      (click)="clearOrUndo()">
+      <span *ngIf="!showUndoConfirm">C/U</span>
+      <span *ngIf="showUndoConfirm" style="font-size: 0.8em;">Undo?</span>
+    </button>
+    <button type="button" class="num-btn" (click)="appendNumber('0')" [disabled]="showUndoConfirm">0</button>
+    <button type="button" class="num-btn submit-btn" (click)="submitVisit()" [disabled]="showUndoConfirm">✓</button>
+  </div>
+</div>

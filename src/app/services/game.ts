@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { DartThrow, makeSyntheticThrow } from '../models/dart-throw.model';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class GameService {
   dart3: number = 0;
   totalThrows: number = 0; // Total number of throws (keeps incrementing)
   roundScore: number = 0; // Total score for current round
-  throwHistory: number[] = []; // Track all throws for undo functionality
+  throwHistory: DartThrow[] = []; // Track all throws for undo functionality
 
   getCurrentDartInRound(): number {
     // Returns 1, 2, or 3 based on total throws
@@ -46,7 +47,9 @@ export class GameService {
     this.totalThrows = Math.ceil(this.totalThrows / 3) * 3;
   }
 
-  submitDart(dartScore: number, currentScore: number): { valid: boolean; bust: boolean; finished: boolean; newScore: number } {
+  submitDart(dart: DartThrow, currentScore: number): { valid: boolean; bust: boolean; finished: boolean; newScore: number } {
+    const dartScore = dart.score;
+
     // Validate dart score
     if (dartScore < 0 || dartScore > 180) {
       return { valid: false, bust: false, finished: false, newScore: currentScore };
@@ -61,7 +64,7 @@ export class GameService {
     // Store dart and update score
     const newScore = currentScore - dartScore;
     const dartInRound = this.getCurrentDartInRound();
-    
+
     if (dartInRound === 1) {
       this.dart1 = dartScore;
     } else if (dartInRound === 2) {
@@ -69,8 +72,8 @@ export class GameService {
     } else if (dartInRound === 3) {
       this.dart3 = dartScore;
     }
-    
-    this.throwHistory.push(dartScore);
+
+    this.throwHistory.push(dart);
     this.totalThrows++;
     this.roundScore += dartScore;
 
@@ -104,7 +107,7 @@ export class GameService {
     // Update score and track as a single "throw" representing 3 darts
     const newScore = currentScore - turnScore;
     this.roundScore = turnScore;
-    this.throwHistory.push(turnScore);
+    this.throwHistory.push(makeSyntheticThrow(turnScore));
     this.totalThrows += 3; // Per-visit counts as 3 darts
 
     // Check if finished (score = 0)
@@ -121,19 +124,19 @@ export class GameService {
     return this.dart1 + this.dart2 + this.dart3;
   }
 
-  undoLastThrow(): number | null {
+  undoLastThrow(): DartThrow | null {
     if (this.throwHistory.length === 0) {
       return null;
     }
-    
+
     const lastThrow = this.throwHistory.pop()!;
-    
+
     // Decrement first
     this.totalThrows--;
-    
+
     // Now getCurrentDartInRound() tells us which dart we just undid
     const dartThatWasUndone = this.getCurrentDartInRound();
-    
+
     // Clear the dart display for the dart we just undid
     if (dartThatWasUndone === 1) {
       this.dart1 = 0;
@@ -142,8 +145,8 @@ export class GameService {
     } else if (dartThatWasUndone === 3) {
       this.dart3 = 0;
     }
-    
-    this.roundScore -= lastThrow;
+
+    this.roundScore -= lastThrow.score;
     return lastThrow;
   }
 

@@ -58,8 +58,8 @@
     <!-- Unified Input Grid at Bottom -->
     <div class="input-section">
       <app-darts-input 
-        [currentScore]="currentPlayer.score" 
-        (onDartSubmit)="onDartSubmit($event)">
+        (dartThrown)="onDartThrown($event)"
+        (undoDart)="onUndoDart($event)">
       </app-darts-input>
     </div>
   </div>

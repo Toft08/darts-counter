@@ -1,0 +1,112 @@
+<div class="dart-button-layout">
+  <div class="unified-grid">
+    <!-- Row 1: Bull, 20, 19, 18, 17 -->
+    <button type="button" class="grid-btn bull-btn"
+      [class.selected]="selectedMultiplier === 2"
+      [disabled]="!config.allowBull"
+      (click)="selectNumber(25)">
+      {{ selectedMultiplier === 2 ? 'DBull' : 'Bull' }}
+    </button>
+    <button type="button" class="grid-btn"
+      [class.selected]="selectedMultiplier !== 1"
+      [disabled]="!isSegmentAllowed(20)"
+      (click)="selectNumber(20)">20</button>
+    <button type="button" class="grid-btn"
+      [class.selected]="selectedMultiplier !== 1"
+      [disabled]="!isSegmentAllowed(19)"
+      (click)="selectNumber(19)">19</button>
+    <button type="button" class="grid-btn"
+      [class.selected]="selectedMultiplier !== 1"
+      [disabled]="!isSegmentAllowed(18)"
+      (click)="selectNumber(18)">18</button>
+    <button type="button" class="grid-btn"
+      [class.selected]="selectedMultiplier !== 1"
+      [disabled]="!isSegmentAllowed(17)"
+      (click)="selectNumber(17)">17</button>
+
+    <!-- Row 2: Tri, 16, 15, 14, 13 -->
+    <button type="button" class="grid-btn"
+      [class.selected]="selectedMultiplier === 3"
+      [disabled]="!config.allowTriple"
+      (click)="selectMultiplier(3)">Tri</button>
+    <button type="button" class="grid-btn"
+      [class.selected]="selectedMultiplier !== 1"
+      [disabled]="!isSegmentAllowed(16)"
+      (click)="selectNumber(16)">16</button>
+    <button type="button" class="grid-btn"
+      [class.selected]="selectedMultiplier !== 1"
+      [disabled]="!isSegmentAllowed(15)"
+      (click)="selectNumber(15)">15</button>
+    <button type="button" class="grid-btn"
+      [class.selected]="selectedMultiplier !== 1"
+      [disabled]="!isSegmentAllowed(14)"
+      (click)="selectNumber(14)">14</button>
+    <button type="button" class="grid-btn"
+      [class.selected]="selectedMultiplier !== 1"
+      [disabled]="!isSegmentAllowed(13)"
+      (click)="selectNumber(13)">13</button>
+
+    <!-- Row 3: Dub, 12, 11, 10, 9 -->
+    <button type="button" class="grid-btn"
+      [class.selected]="selectedMultiplier === 2"
+      [disabled]="!config.allowDouble"
+      (click)="selectMultiplier(2)">Dub</button>
+    <button type="button" class="grid-btn"
+      [class.selected]="selectedMultiplier !== 1"
+      [disabled]="!isSegmentAllowed(12)"
+      (click)="selectNumber(12)">12</button>
+    <button type="button" class="grid-btn"
+      [class.selected]="selectedMultiplier !== 1"
+      [disabled]="!isSegmentAllowed(11)"
+      (click)="selectNumber(11)">11</button>
+    <button type="button" class="grid-btn"
+      [class.selected]="selectedMultiplier !== 1"
+      [disabled]="!isSegmentAllowed(10)"
+      (click)="selectNumber(10)">10</button>
+    <button type="button" class="grid-btn"
+      [class.selected]="selectedMultiplier !== 1"
+      [disabled]="!isSegmentAllowed(9)"
+      (click)="selectNumber(9)">9</button>
+
+    <!-- Row 4: Miss, 8, 7, 6, 5 -->
+    <button type="button" class="grid-btn miss-btn"
+      (click)="selectNumber(0)">Miss</button>
+    <button type="button" class="grid-btn"
+      [class.selected]="selectedMultiplier !== 1"
+      [disabled]="!isSegmentAllowed(8)"
+      (click)="selectNumber(8)">8</button>
+    <button type="button" class="grid-btn"
+      [class.selected]="selectedMultiplier !== 1"
+      [disabled]="!isSegmentAllowed(7)"
+      (click)="selectNumber(7)">7</button>
+    <button type="button" class="grid-btn"
+      [class.selected]="selectedMultiplier !== 1"
+      [disabled]="!isSegmentAllowed(6)"
+      (click)="selectNumber(6)">6</button>
+    <button type="button" class="grid-btn"
+      [class.selected]="selectedMultiplier !== 1"
+      [disabled]="!isSegmentAllowed(5)"
+      (click)="selectNumber(5)">5</button>
+
+    <!-- Row 5: Undo, 4, 3, 2, 1 -->
+    <button type="button" class="grid-btn undo-btn"
+      [disabled]="game.throwHistory.length === 0"
+      (click)="undoLastDart()">Undo</button>
+    <button type="button" class="grid-btn"
+      [class.selected]="selectedMultiplier !== 1"
+      [disabled]="!isSegmentAllowed(4)"
+      (click)="selectNumber(4)">4</button>
+    <button type="button" class="grid-btn"
+      [class.selected]="selectedMultiplier !== 1"
+      [disabled]="!isSegmentAllowed(3)"
+      (click)="selectNumber(3)">3</button>
+    <button type="button" class="grid-btn"
+      [class.selected]="selectedMultiplier !== 1"
+      [disabled]="!isSegmentAllowed(2)"
+      (click)="selectNumber(2)">2</button>
+    <button type="button" class="grid-btn"
+      [class.selected]="selectedMultiplier !== 1"
+      [disabled]="!isSegmentAllowed(1)"
+      (click)="selectNumber(1)">1</button>
+  </div>
+</div>

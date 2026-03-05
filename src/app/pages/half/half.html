@@ -8,6 +8,7 @@
     <div *ngIf="players.length === 0" class="player-mode-select">
       <button type="button" class="mode-btn" (click)="addPlayer('Player 1'); addPlayer('Player 2')">Add 2 Players</button>
       <button type="button" class="mode-btn" (click)="addPlayer('Player 1')">Solo</button>
+      <button type="button" class="mode-btn mode-btn--team" (click)="startTeamGame()">🤝 Team Mode</button>
     </div>
 
     <div *ngIf="players.length > 0">
@@ -37,8 +38,65 @@
     <button type="button" class="start-btn" (click)="startGame()">Start Game</button>
   </div>
 
-  <!-- ── IN GAME ── -->
-  <div *ngIf="gameStarted && !gameOver">
+  <!-- ── IN GAME – TEAM MODE ── -->
+  <div *ngIf="gameStarted && !gameOver && teamMode">
+
+    <!-- Target progress bar -->
+    <div class="target-progress">
+      <div
+        *ngFor="let t of targets; let i = index"
+        class="progress-chip"
+        [class.done]="i < targetIndex"
+        [class.current]="i === targetIndex">
+        {{ targetLabel(t) }}
+      </div>
+    </div>
+
+    <!-- Team score -->
+    <div class="team-scoreboard">
+      <span class="team-score-label">Team Score</span>
+      <span class="team-score-value" [class.team-halved]="teamLastHalved">{{ teamScore }}</span>
+      <span class="score-halved-badge" *ngIf="teamLastHalved">½ Halved!</span>
+    </div>
+
+    <!-- Input panel -->
+    <div class="team-panel">
+      <div class="active-header">
+        <span class="current-target-badge">Target: {{ targetLabel(currentTarget) }}</span>
+      </div>
+      <div class="team-input-block">
+        <label class="team-input-label">{{ teamInputLabel }}</label>
+        <p class="team-input-hint">{{ teamInputHint }}</p>
+        <div class="team-display">{{ teamInput || '-' }}</div>
+        <div class="team-preview" *ngIf="teamInputValue > 0">
+          <span>+{{ teamComputedScore }} pts</span>
+        </div>
+        <div class="team-preview team-preview--halved" *ngIf="teamInputValue === 0 && teamScore > 0">
+          <span>Score will be halved → {{ teamScore }} ÷ 2 = {{ teamScore % 2 === 0 ? teamScore / 2 : (teamScore + 1) / 2 }}</span>
+        </div>
+        <div class="team-numpad">
+          <button type="button" class="team-num-btn" (click)="teamAppend('1')">1</button>
+          <button type="button" class="team-num-btn" (click)="teamAppend('2')">2</button>
+          <button type="button" class="team-num-btn" (click)="teamAppend('3')">3</button>
+          <button type="button" class="team-num-btn" (click)="teamAppend('4')">4</button>
+          <button type="button" class="team-num-btn" (click)="teamAppend('5')">5</button>
+          <button type="button" class="team-num-btn" (click)="teamAppend('6')">6</button>
+          <button type="button" class="team-num-btn" (click)="teamAppend('7')">7</button>
+          <button type="button" class="team-num-btn" (click)="teamAppend('8')">8</button>
+          <button type="button" class="team-num-btn" (click)="teamAppend('9')">9</button>
+          <button type="button" class="team-num-btn team-clear-btn" (click)="teamClear()">C</button>
+          <button type="button" class="team-num-btn" (click)="teamAppend('0')">0</button>
+          <button type="button" class="team-num-btn team-submit-btn" (click)="submitTeamRound()">
+            {{ isLastTarget ? '✓' : '›' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── IN GAME – INDIVIDUAL ── -->
+  <div *ngIf="gameStarted && !gameOver && !teamMode">
 
     <!-- Target progress bar -->
     <div class="target-progress">
@@ -114,13 +172,25 @@
   <!-- ── GAME OVER ── -->
   <div *ngIf="gameOver" class="game-over">
     <h2>🎯 Game Over!</h2>
-    <div class="final-scoreboard">
+
+    <!-- Team result -->
+    <div *ngIf="teamMode" class="final-scoreboard">
+      <div class="final-row winner">
+        <span class="final-rank">🤝</span>
+        <span class="final-name">Team</span>
+        <span class="final-score">{{ teamScore }}</span>
+      </div>
+    </div>
+
+    <!-- Individual results -->
+    <div *ngIf="!teamMode" class="final-scoreboard">
       <div *ngFor="let player of sortedPlayers; let i = index" class="final-row" [class.winner]="i === 0">
         <span class="final-rank">{{ i + 1 }}.</span>
         <span class="final-name">{{ player.name }}</span>
         <span class="final-score">{{ player.totalScore }}</span>
       </div>
     </div>
+
     <button type="button" class="start-btn" (click)="restartGame()">Play Again</button>
   </div>
 

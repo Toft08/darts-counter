@@ -1,0 +1,89 @@
+.dart-button-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+// Unified Grid Layout: 5 columns (1 modifier + 4 numbers per row)
+.unified-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+
+  .grid-btn {
+    aspect-ratio: 1;
+    padding: 5px;
+    font-size: 1.2em;
+    font-weight: bold;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover:not(:disabled) {
+      background: #f0f0f0;
+      border-color: #999;
+      transform: scale(1.05);
+    }
+
+    &:active:not(:disabled) {
+      transform: scale(0.95);
+    }
+
+    &:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    &.selected {
+      background: #83a0ee;
+      color: white;
+      border-color: #667eea;
+    }
+
+    &.bull-btn {
+      background: #2dbb17;
+      color: #333;
+      font-size: 0.95em;
+
+      &.selected {
+        background: #d13b1e;
+        border-color: #a93018;
+        color: white;
+      }
+
+      &:hover:not(:disabled) {
+        background: #ffb300;
+      }
+    }
+
+    &.miss-btn {
+      background: #dc3545;
+      color: white;
+
+      &:hover:not(:disabled) {
+        background: #c82333;
+      }
+    }
+
+    &.undo-btn {
+      background: #6c757d;
+      color: white;
+
+      &:hover:not(:disabled) {
+        background: #5a6268;
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+  }
+}
