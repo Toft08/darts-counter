@@ -1,0 +1,127 @@
+<div class="half-container">
+
+  <!-- ── SETUP ── -->
+  <div *ngIf="!gameStarted">
+    <h3>Setup – Half It</h3>
+
+    <h4>Players</h4>
+    <div *ngIf="players.length === 0" class="player-mode-select">
+      <button type="button" class="mode-btn" (click)="addPlayer('Player 1'); addPlayer('Player 2')">Add 2 Players</button>
+      <button type="button" class="mode-btn" (click)="addPlayer('Player 1')">Solo</button>
+    </div>
+
+    <div *ngIf="players.length > 0">
+      <div class="players-list">
+        <div *ngFor="let player of players; let i = index" class="player-item">
+          <input type="text" [(ngModel)]="player.name" [placeholder]="'Player ' + (i + 1)" />
+          <button type="button" (click)="removePlayer(i)">Remove</button>
+        </div>
+      </div>
+      <button type="button" class="add-more-btn" (click)="addPlayer()">Add Player</button>
+    </div>
+
+    <div class="rules-box">
+      <strong>Rules</strong>
+      <ol>
+        <li *ngFor="let t of targets; let i = index">
+          <span class="target-chip">{{ targetLabel(t) }}</span>
+          <span *ngIf="t.kind === 'exact'"> – score exactly {{ t.value }} across 3 darts</span>
+          <span *ngIf="t.kind === 'double'"> – any double scores face × 2</span>
+          <span *ngIf="t.kind === 'triple'"> – any triple scores face × 3</span>
+          <span *ngIf="t.kind === 'bull'"> – 25 (single) or 50 (double bull)</span>
+        </li>
+      </ol>
+      <p class="rules-note">Miss a target (0 valid hits)? Your total is <strong>halved</strong>.</p>
+    </div>
+
+    <button type="button" class="start-btn" (click)="startGame()">Start Game</button>
+  </div>
+
+  <!-- ── IN GAME ── -->
+  <div *ngIf="gameStarted && !gameOver">
+
+    <!-- Target progress bar -->
+    <div class="target-progress">
+      <div
+        *ngFor="let t of targets; let i = index"
+        class="progress-chip"
+        [class.done]="i < targetIndex"
+        [class.current]="i === targetIndex">
+        {{ targetLabel(t) }}
+      </div>
+    </div>
+
+    <!-- Player scoreboard -->
+    <div class="scoreboard">
+      <div
+        *ngFor="let player of players; let i = index"
+        class="score-row"
+        [class.active]="i === currentPlayerIndex"
+        [class.halved]="player.halved">
+        <span class="score-name">{{ player.name }}</span>
+        <span class="score-total">{{ player.totalScore }}</span>
+        <span class="score-halved-badge" *ngIf="player.halved">½</span>
+      </div>
+    </div>
+
+    <!-- Active player panel -->
+    <div class="active-panel">
+      <div class="active-header">
+        <span class="active-label">{{ currentPlayer.name }}</span>
+        <span class="current-target-badge">→ {{ targetLabel(currentTarget) }}</span>
+      </div>
+
+      <!-- Dart slots -->
+      <div class="dart-slots">
+        <div class="dart-slot" [class.active-slot]="currentPlayer.dartsThrown === 0">
+          <span class="slot-label">D1</span>
+          <span class="slot-val">{{ currentPlayer.lastDarts[0] > 0 ? currentPlayer.lastDarts[0] : '-' }}</span>
+        </div>
+        <div class="dart-slot" [class.active-slot]="currentPlayer.dartsThrown === 1">
+          <span class="slot-label">D2</span>
+          <span class="slot-val">{{ currentPlayer.lastDarts[1] > 0 ? currentPlayer.lastDarts[1] : '-' }}</span>
+        </div>
+        <div class="dart-slot" [class.active-slot]="currentPlayer.dartsThrown === 2">
+          <span class="slot-label">D3</span>
+          <span class="slot-val">{{ currentPlayer.lastDarts[2] > 0 ? currentPlayer.lastDarts[2] : '-' }}</span>
+        </div>
+        <div class="dart-slot round-score-slot">
+          <span class="slot-label">This target</span>
+          <span class="slot-val round-val">+{{ currentPlayer.roundScore }}</span>
+        </div>
+      </div>
+
+      <!-- Target hint -->
+      <div class="target-hint">
+        <span *ngIf="currentTarget.kind === 'number'">Hit the <strong>{{ currentTarget.value }}</strong> (any single, double or triple)</span>
+        <span *ngIf="currentTarget.kind === 'double'">Hit any <strong>Double</strong> (D1–D20 or D-Bull)</span>
+        <span *ngIf="currentTarget.kind === 'triple'">Hit any <strong>Triple</strong> (T1–T20)</span>
+        <span *ngIf="currentTarget.kind === 'exact'">Score exactly <strong>41</strong> across 3 darts</span>
+        <span *ngIf="currentTarget.kind === 'bull'">Hit the <strong>Bull</strong> (25 or 50)</span>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="input-section">
+      <app-half-input
+        [target]="currentTarget"
+        [dartsThrown]="currentPlayer.dartsThrown"
+        (dartScored)="onDartScored($event)">
+      </app-half-input>
+    </div>
+  </div>
+
+  <!-- ── GAME OVER ── -->
+  <div *ngIf="gameOver" class="game-over">
+    <h2>🎯 Game Over!</h2>
+    <div class="final-scoreboard">
+      <div *ngFor="let player of sortedPlayers; let i = index" class="final-row" [class.winner]="i === 0">
+        <span class="final-rank">{{ i + 1 }}.</span>
+        <span class="final-name">{{ player.name }}</span>
+        <span class="final-score">{{ player.totalScore }}</span>
+      </div>
+    </div>
+    <button type="button" class="start-btn" (click)="restartGame()">Play Again</button>
+  </div>
+
+</div>

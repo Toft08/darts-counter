@@ -25,6 +25,8 @@ export class NavbarComponent {
         this.currentGameMode = 'X01 Game';
       } else if (url.includes('/checkout')) {
         this.currentGameMode = 'Checkout';
+      } else if (url.includes('/half')) {
+        this.currentGameMode = 'Half It';
       } else {
         this.currentGameMode = '';
       }

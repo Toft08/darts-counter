@@ -1,0 +1,199 @@
+.half-input {
+  padding: 4px 0;
+}
+
+// ── Dart indicator ─────────────────────────────────
+.dart-indicator {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 14px;
+
+  .dart-pip {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85em;
+    font-weight: 700;
+    background: #e9ecef;
+    color: #aaa;
+    border: 2px solid #ddd;
+    transition: all 0.2s;
+
+    &.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-color: #667eea;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+    }
+
+    &.done {
+      background: #d4edda;
+      color: #28a745;
+      border-color: #28a745;
+    }
+  }
+}
+
+// ── Hit row (number / bull targets) ───────────────
+.hit-row {
+  display: flex;
+  gap: 8px;
+
+  .hit-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 8px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.15s;
+    gap: 4px;
+
+    &:active { transform: scale(0.95); }
+
+    .hit-label {
+      font-size: 0.75em;
+      color: #666;
+      font-weight: 500;
+    }
+
+    .hit-value {
+      font-size: 1.6em;
+      font-weight: bold;
+      color: #333;
+    }
+  }
+}
+
+// ── Shared button colours ──────────────────────────
+.miss-btn {
+  background: #dc3545 !important;
+  color: white !important;
+  border-color: #dc3545 !important;
+  .hit-label, .hit-value { color: white !important; }
+  &:hover { background: #c82333 !important; }
+}
+
+.single-btn {
+  background: #f8f9fa;
+  border-color: #6c757d !important;
+  &:hover { background: #e9ecef; }
+}
+
+.double-btn {
+  background: #e8f4e8 !important;
+  border-color: #28a745 !important;
+  .hit-label, .hit-value, .num-top, .num-bot { color: #1a7a30 !important; }
+  &:hover { background: #d4edda !important; }
+}
+
+.triple-btn {
+  background: #fff3cd !important;
+  border-color: #ffc107 !important;
+  .hit-label, .hit-value, .num-top, .num-bot { color: #856404 !important; }
+  &:hover { background: #ffe69c !important; }
+}
+
+.bull-btn {
+  background: #d1ecf1 !important;
+  border-color: #17a2b8 !important;
+  color: #0c5460 !important;
+  &:hover { background: #bee5eb !important; }
+}
+
+// ── Hint text ──────────────────────────────────────
+.hint-text {
+  text-align: center;
+  font-size: 0.85em;
+  color: #666;
+  margin-bottom: 10px;
+  font-style: italic;
+}
+
+// ── Multiplier row (41 target) ─────────────────────
+.multiplier-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+
+  .mult-btn {
+    flex: 1;
+    padding: 12px;
+    font-size: 1.1em;
+    font-weight: bold;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    color: #555;
+    cursor: pointer;
+    transition: all 0.15s;
+
+    &:active { transform: scale(0.95); }
+
+    &.selected {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-color: #667eea;
+    }
+  }
+}
+
+// ── Number grid (Double / Triple / 41 targets) ─────
+.number-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 5px;
+
+  .wide-miss {
+    grid-column: span 1;
+    font-size: 0.85em;
+    font-weight: 700;
+    padding: 10px 4px;
+  }
+
+  .num-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 4px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    color: #333;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    aspect-ratio: 1;
+
+    &:active { transform: scale(0.92); }
+    &:hover { background: #f0f0f0; }
+
+    .num-top {
+      font-size: 0.65em;
+      color: #666;
+    }
+
+    .num-bot {
+      font-size: 1.1em;
+      font-weight: bold;
+    }
+  }
+}
+
+// ── Mobile ─────────────────────────────────────────
+@media (max-width: 400px) {
+  .hit-btn {
+    padding: 12px 4px !important;
+    .hit-value { font-size: 1.3em !important; }
+  }
+}

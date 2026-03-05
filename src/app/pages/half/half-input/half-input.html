@@ -1,0 +1,98 @@
+<div class="half-input">
+
+  <!-- Dart indicator -->
+  <div class="dart-indicator">
+    <div class="dart-pip" [class.active]="dartsThrown === 0" [class.done]="dartsThrown > 0">D1</div>
+    <div class="dart-pip" [class.active]="dartsThrown === 1" [class.done]="dartsThrown > 1">D2</div>
+    <div class="dart-pip" [class.active]="dartsThrown === 2" [class.done]="dartsThrown > 2">D3</div>
+  </div>
+
+  <!-- NUMBER target: Miss / Single / Double / Triple -->
+  <ng-container *ngIf="target.kind === 'number'">
+    <div class="hit-row">
+      <button class="hit-btn miss-btn" (click)="miss()">Miss</button>
+      <button class="hit-btn single-btn" (click)="hitNumber(1)">
+        <span class="hit-label">Single</span>
+        <span class="hit-value">{{ numberValue }}</span>
+      </button>
+      <button class="hit-btn double-btn" (click)="hitNumber(2)">
+        <span class="hit-label">Double</span>
+        <span class="hit-value">{{ numberValue * 2 }}</span>
+      </button>
+      <button class="hit-btn triple-btn" (click)="hitNumber(3)">
+        <span class="hit-label">Triple</span>
+        <span class="hit-value">{{ numberValue * 3 }}</span>
+      </button>
+    </div>
+  </ng-container>
+
+  <!-- DOUBLE target: Miss + numbers 1-20 shown as doubles -->
+  <ng-container *ngIf="target.kind === 'double'">
+    <p class="hint-text">Tap any double — value shown is the double score</p>
+    <div class="number-grid">
+      <button class="num-btn miss-btn wide-miss" (click)="miss()">Miss</button>
+      <button
+        *ngFor="let n of numbers"
+        class="num-btn double-btn"
+        (click)="hitMultiple(n, 'double')">
+        <span class="num-top">D{{ n }}</span>
+        <span class="num-bot">{{ n * 2 }}</span>
+      </button>
+      <button class="num-btn double-btn" (click)="hitMultiple(25, 'double')">
+        <span class="num-top">D-Bull</span>
+        <span class="num-bot">50</span>
+      </button>
+    </div>
+  </ng-container>
+
+  <!-- TRIPLE target: Miss + numbers 1-20 shown as triples -->
+  <ng-container *ngIf="target.kind === 'triple'">
+    <p class="hint-text">Tap any triple — value shown is the triple score</p>
+    <div class="number-grid">
+      <button class="num-btn miss-btn wide-miss" (click)="miss()">Miss</button>
+      <button
+        *ngFor="let n of numbers"
+        class="num-btn triple-btn"
+        (click)="hitMultiple(n, 'triple')">
+        <span class="num-top">T{{ n }}</span>
+        <span class="num-bot">{{ n * 3 }}</span>
+      </button>
+    </div>
+  </ng-container>
+
+  <!-- 41 EXACT target: standard dart grid (S/D/T + 1-20 + bull + miss) -->
+  <ng-container *ngIf="target.kind === 'exact'">
+    <p class="hint-text">Score exactly 41 across your 3 darts</p>
+    <div class="multiplier-row">
+      <button class="mult-btn" [class.selected]="selectedMultiplier === 1" (click)="toggleMultiplier(1)">S</button>
+      <button class="mult-btn double-btn" [class.selected]="selectedMultiplier === 2" (click)="toggleMultiplier(2)">D</button>
+      <button class="mult-btn triple-btn" [class.selected]="selectedMultiplier === 3" (click)="toggleMultiplier(3)">T</button>
+    </div>
+    <div class="number-grid">
+      <button class="num-btn miss-btn wide-miss" (click)="miss()">Miss</button>
+      <button
+        *ngFor="let n of numbers"
+        class="num-btn"
+        (click)="hitStandard(n)">
+        {{ n }}
+      </button>
+      <button class="num-btn bull-btn" (click)="hitStandard(25)">Bull</button>
+    </div>
+  </ng-container>
+
+  <!-- BULL target: Miss / Single Bull / Double Bull -->
+  <ng-container *ngIf="target.kind === 'bull'">
+    <div class="hit-row">
+      <button class="hit-btn miss-btn" (click)="miss()">Miss</button>
+      <button class="hit-btn single-btn" (click)="hitBull(25)">
+        <span class="hit-label">Single Bull</span>
+        <span class="hit-value">25</span>
+      </button>
+      <button class="hit-btn double-btn" (click)="hitBull(50)">
+        <span class="hit-label">Double Bull</span>
+        <span class="hit-value">50</span>
+      </button>
+    </div>
+  </ng-container>
+
+</div>
