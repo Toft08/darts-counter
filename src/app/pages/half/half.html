@@ -144,15 +144,15 @@
           <span class="slot-val">{{ currentPlayer.lastDarts[2] > 0 ? currentPlayer.lastDarts[2] : '-' }}</span>
         </div>
         <div class="dart-slot round-score-slot">
-          <span class="slot-label">This target</span>
-          <span class="slot-val round-val">+{{ currentPlayer.roundScore }}</span>
+          <span class="slot-label">{{ currentTarget.kind === 'exact' ? 'Remaining' : 'This target' }}</span>
+          <span class="slot-val round-val">{{ currentTarget.kind === 'exact' ? (41 - currentPlayer.roundScore) : currentPlayer.roundScore }}</span>
         </div>
       </div>
 
       <!-- Target hint -->
       <div class="target-hint">
         <span *ngIf="currentTarget.kind === 'number'">Hit the <strong>{{ currentTarget.value }}</strong> (any single, double or triple)</span>
-        <span *ngIf="currentTarget.kind === 'double'">Hit any <strong>Double</strong> (D1–D20 or D-Bull)</span>
+        <span *ngIf="currentTarget.kind === 'double'">Hit any <strong>Double</strong> (D1–D20)</span>
         <span *ngIf="currentTarget.kind === 'triple'">Hit any <strong>Triple</strong> (T1–T20)</span>
         <span *ngIf="currentTarget.kind === 'exact'">Score exactly <strong>41</strong> across 3 darts</span>
         <span *ngIf="currentTarget.kind === 'bull'">Hit the <strong>Bull</strong> (25 or 50)</span>

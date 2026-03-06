@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GameService } from '../../services/game';
 import { DartboardConfig, STANDARD_CONFIG } from '../../models/dartboard-config.model';
@@ -11,9 +11,11 @@ import { DartThrow, makeDartThrow } from '../../models/dart-throw.model';
   standalone: true,
   imports: [CommonModule],
 })
-export class DartByDartInputComponent {
+export class DartByDartInputComponent implements OnChanges {
   /** Controls which segments and multipliers are active for the current game mode. */
   @Input() config: DartboardConfig = STANDARD_CONFIG;
+  /** When set to 2 or 3, that multiplier is pre-selected and cannot be toggled off. */
+  @Input() initialMultiplier: 1 | 2 | 3 = 1;
 
   /** Emits whenever a dart is registered (miss counts too). */
   @Output() dartThrown = new EventEmitter<DartThrow>();
@@ -25,14 +27,21 @@ export class DartByDartInputComponent {
 
   constructor(public game: GameService) {}
 
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['initialMultiplier'] || changes['config']) {
+      this.selectedMultiplier = this.initialMultiplier;
+    }
+  }
+
   isSegmentAllowed(n: number): boolean {
     if (this.config.allowedSegments === 'all') return true;
     return (this.config.allowedSegments as number[]).includes(n);
   }
 
   selectMultiplier(mult: 1 | 2 | 3) {
-    // Toggle off if the same multiplier is clicked again
-    this.selectedMultiplier = this.selectedMultiplier === mult ? 1 : mult;
+    // Cannot toggle off a locked initial multiplier
+    if (this.selectedMultiplier === mult && mult === this.initialMultiplier) return;
+    this.selectedMultiplier = this.selectedMultiplier === mult ? this.initialMultiplier : mult;
   }
 
   selectNumber(segment: number) {
@@ -56,7 +65,7 @@ export class DartByDartInputComponent {
     }
 
     this.dartThrown.emit(dart);
-    this.selectedMultiplier = 1;
+    this.selectedMultiplier = this.initialMultiplier;
   }
 
   undoLastDart() {
