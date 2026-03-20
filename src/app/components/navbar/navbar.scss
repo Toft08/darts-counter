@@ -183,3 +183,18 @@ nav {
     min-width: auto;
   }
 }
+
+@media (max-width: 400px) {
+  nav {
+    padding: 8px 12px;
+  }
+
+  .home-link {
+    font-size: 1.05em;
+  }
+
+  .game-mode {
+    font-size: 0.9em;
+    padding: 4px 10px;
+  }
+}

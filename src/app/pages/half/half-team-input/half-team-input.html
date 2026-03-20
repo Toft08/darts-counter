@@ -1,0 +1,27 @@
+<div class="team-panel">
+  <div class="team-input-block">
+    <label class="team-input-label">{{ inputLabel }}</label>
+    <p class="team-input-hint">{{ inputHint }}</p>
+    <div class="team-display-wrapper">
+      <div class="team-display">{{ teamInput || '-' }}</div>
+      <span class="team-preview-badge" *ngIf="inputValue > 0">+{{ computedScore }}</span>
+      <span class="team-preview-badge team-preview-badge--halved" *ngIf="inputValue === 0 && teamScore > 0">½</span>
+    </div>
+    <div class="team-numpad">
+      <button type="button" class="team-num-btn" (click)="append('1')">1</button>
+      <button type="button" class="team-num-btn" (click)="append('2')">2</button>
+      <button type="button" class="team-num-btn" (click)="append('3')">3</button>
+      <button type="button" class="team-num-btn" (click)="append('4')">4</button>
+      <button type="button" class="team-num-btn" (click)="append('5')">5</button>
+      <button type="button" class="team-num-btn" (click)="append('6')">6</button>
+      <button type="button" class="team-num-btn" (click)="append('7')">7</button>
+      <button type="button" class="team-num-btn" (click)="append('8')">8</button>
+      <button type="button" class="team-num-btn" (click)="append('9')">9</button>
+      <button type="button" class="team-num-btn team-clear-btn" (click)="clear()">C</button>
+      <button type="button" class="team-num-btn" (click)="append('0')">0</button>
+      <button type="button" class="team-num-btn team-submit-btn" (click)="submit()">
+        {{ isLastTarget ? '✓' : '›' }}
+      </button>
+    </div>
+  </div>
+</div>

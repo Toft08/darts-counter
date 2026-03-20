@@ -1,0 +1,146 @@
+.team-panel {
+  background: white;
+  border: 2px solid #667eea;
+  border-radius: 12px;
+  padding: clamp(10px, 4vw, 18px);
+  box-shadow: 0 2px 10px rgba(102, 126, 234, 0.12);
+
+  .active-header {
+    margin-bottom: 14px;
+    text-align: center;
+
+    .current-target-badge {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 1em;
+      font-weight: 600;
+    }
+  }
+}
+
+.team-input-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+
+  .team-input-label {
+    font-weight: 700;
+    color: #333;
+    font-size: 1em;
+  }
+
+  .team-input-hint {
+    color: #777;
+    font-size: 0.85em;
+    margin: 0;
+    font-style: italic;
+  }
+}
+
+.team-display-wrapper {
+  position: relative;
+  margin-bottom: 6px;
+}
+
+.team-preview-badge {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  background: #28a745;
+  color: white;
+  font-size: 0.75em;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 20px;
+  pointer-events: none;
+
+  &--halved {
+    background: #ffc107;
+    color: #856404;
+  }
+}
+
+.team-display {
+  font-size: clamp(1.6em, 8vw, 2.4em);
+  font-weight: bold;
+  text-align: center;
+  color: #333;
+  background: #f5f5f5;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  padding: 10px;
+  letter-spacing: clamp(1px, 2vw, 4px);
+  word-break: break-all;
+}
+
+.team-numpad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 10px;
+
+  .team-num-btn {
+    aspect-ratio: 1;
+    font-size: clamp(1.1em, 5vw, 1.6em);
+    font-weight: bold;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    background: white;
+    color: #333;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+
+    &:hover:not(:disabled) {
+      background: #f0f0f0;
+      border-color: #999;
+      transform: scale(1.05);
+    }
+
+    &:active:not(:disabled) {
+      transform: scale(0.93);
+    }
+  }
+
+  .team-clear-btn {
+    background: #dc3545;
+    color: white;
+    border-color: #dc3545;
+
+    &:hover { background: #c82333; border-color: #c82333; }
+  }
+
+  .team-submit-btn {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    color: white;
+    border-color: #11998e;
+    font-size: clamp(1.3em, 5vw, 1.8em);
+
+    &:hover { transform: scale(1.08); }
+  }
+}
+
+// ── Responsive – small phones ──────────────────────
+@media (max-width: 480px) {
+  .team-input-block {
+    gap: 4px;
+
+    .team-input-label { font-size: 0.95em; }
+    .team-input-hint  { font-size: 0.8em; }
+  }
+
+  .team-numpad {
+    gap: 6px;
+  }
+}
+
+@media (max-width: 360px) {
+  .team-numpad {
+    gap: 4px;
+  }
+}

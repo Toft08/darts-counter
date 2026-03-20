@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HalfInputComponent } from './half-input/half-input';
+import { HalfTeamInputComponent } from './half-team-input/half-team-input';
 
 export type HalfTarget =
   | { kind: 'number'; value: number }
@@ -26,7 +27,7 @@ export function targetLabel(t: HalfTarget): string {
     case 'number': return `${t.value}`;
     case 'double': return 'Double';
     case 'triple': return 'Triple';
-    case 'exact': return '41 exact';
+    case 'exact': return '41';
     case 'bull': return 'Bull';
   }
 }
@@ -46,7 +47,7 @@ interface HalfPlayer {
   templateUrl: './half.html',
   styleUrls: ['./half.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, HalfInputComponent],
+  imports: [CommonModule, FormsModule, HalfInputComponent, HalfTeamInputComponent],
 })
 export class HalfComponent {
   gameStarted = false;
@@ -58,7 +59,6 @@ export class HalfComponent {
   // ── Team mode ────────────────────────────────────
   teamMode = false;
   teamScore = 0;
-  teamInput: string = '';
   teamLastHalved = false;
 
   readonly targets = HALF_TARGETS;
@@ -104,65 +104,16 @@ export class HalfComponent {
   }
 
   // ── Team mode setup & logic ───────────────────────
-  teamAppend(n: string) {
-    if (this.teamInput.length < 3) this.teamInput += n;
-  }
-
-  teamClear() {
-    this.teamInput = '';
-  }
-
   startTeamGame() {
     this.teamMode = true;
     this.teamScore = 0;
-    this.teamInput = '';
     this.teamLastHalved = false;
     this.targetIndex = 0;
     this.gameStarted = true;
     this.gameOver = false;
   }
 
-  get teamInputLabel(): string {
-    const t = this.currentTarget;
-    switch (t.kind) {
-      case 'number': return `Hits on ${t.value}`;
-      case 'exact':  return 'Players who scored exactly 41';
-      case 'double': return 'Total score from doubles';
-      case 'triple': return 'Total score from triples';
-      case 'bull':   return 'Number of bull hits';
-    }
-  }
-
-  get teamInputHint(): string {
-    const t = this.currentTarget;
-    switch (t.kind) {
-      case 'number': return `Single = 1 hit, Double = 2 hits, Triple = 3 hits  (× ${(t as any).value} pts each)`;
-      case 'exact':  return 'Each player who hit 41 exact scores 41 pts';
-      case 'double': return 'Enter the total score (e.g. D20 + D17 = 40 + 34 = 74)';
-      case 'triple': return 'Enter the total score (e.g. T19 + T5 = 57 + 15 = 72)';
-      case 'bull':   return 'Each hit = 25 pts (single = 25, double bull = 50)';
-    }
-  }
-
-  get teamInputValue(): number {
-    return parseInt(this.teamInput) || 0;
-  }
-
-  get teamComputedScore(): number {
-    const v = this.teamInputValue;
-    if (v <= 0) return 0;
-    const t = this.currentTarget;
-    switch (t.kind) {
-      case 'number': return v * t.value;
-      case 'exact':  return v * 41;
-      case 'double':
-      case 'triple':  return v;
-      case 'bull':    return v * 25;
-    }
-  }
-
-  submitTeamRound() {
-    const earned = this.teamComputedScore;
+  onTeamRoundSubmitted(earned: number) {
     this.teamLastHalved = earned === 0;
     if (earned === 0) {
       this.teamScore = Math.ceil(this.teamScore / 2);
@@ -173,7 +124,6 @@ export class HalfComponent {
       this.gameOver = true;
     } else {
       this.targetIndex++;
-      this.teamInput = '';
     }
   }
 
@@ -245,7 +195,6 @@ export class HalfComponent {
     this.gameOver = false;
     this.teamMode = false;
     this.teamScore = 0;
-    this.teamInput = '';
     this.players = [];
   }
 }

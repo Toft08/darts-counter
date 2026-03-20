@@ -6,9 +6,8 @@
 
     <h4>Players</h4>
     <div *ngIf="players.length === 0" class="player-mode-select">
-      <button type="button" class="mode-btn" (click)="addPlayer('Player 1'); addPlayer('Player 2')">Add 2 Players</button>
-      <button type="button" class="mode-btn" (click)="addPlayer('Player 1')">Solo</button>
-      <button type="button" class="mode-btn mode-btn--team" (click)="startTeamGame()">🤝 Team Mode</button>
+      <button type="button" class="mode-btn" (click)="addPlayer('Player 1'); addPlayer('Player 2')">Add players</button>
+      <button type="button" class="mode-btn mode-btn" (click)="startTeamGame()">🤝 Team Mode</button>
     </div>
 
     <div *ngIf="players.length > 0">
@@ -60,38 +59,12 @@
     </div>
 
     <!-- Input panel -->
-    <div class="team-panel">
-      <div class="active-header">
-        <span class="current-target-badge">Target: {{ targetLabel(currentTarget) }}</span>
-      </div>
-      <div class="team-input-block">
-        <label class="team-input-label">{{ teamInputLabel }}</label>
-        <p class="team-input-hint">{{ teamInputHint }}</p>
-        <div class="team-display">{{ teamInput || '-' }}</div>
-        <div class="team-preview" *ngIf="teamInputValue > 0">
-          <span>+{{ teamComputedScore }} pts</span>
-        </div>
-        <div class="team-preview team-preview--halved" *ngIf="teamInputValue === 0 && teamScore > 0">
-          <span>Score will be halved → {{ teamScore }} ÷ 2 = {{ teamScore % 2 === 0 ? teamScore / 2 : (teamScore + 1) / 2 }}</span>
-        </div>
-        <div class="team-numpad">
-          <button type="button" class="team-num-btn" (click)="teamAppend('1')">1</button>
-          <button type="button" class="team-num-btn" (click)="teamAppend('2')">2</button>
-          <button type="button" class="team-num-btn" (click)="teamAppend('3')">3</button>
-          <button type="button" class="team-num-btn" (click)="teamAppend('4')">4</button>
-          <button type="button" class="team-num-btn" (click)="teamAppend('5')">5</button>
-          <button type="button" class="team-num-btn" (click)="teamAppend('6')">6</button>
-          <button type="button" class="team-num-btn" (click)="teamAppend('7')">7</button>
-          <button type="button" class="team-num-btn" (click)="teamAppend('8')">8</button>
-          <button type="button" class="team-num-btn" (click)="teamAppend('9')">9</button>
-          <button type="button" class="team-num-btn team-clear-btn" (click)="teamClear()">C</button>
-          <button type="button" class="team-num-btn" (click)="teamAppend('0')">0</button>
-          <button type="button" class="team-num-btn team-submit-btn" (click)="submitTeamRound()">
-            {{ isLastTarget ? '✓' : '›' }}
-          </button>
-        </div>
-      </div>
-    </div>
+    <app-half-team-input
+      [target]="currentTarget"
+      [teamScore]="teamScore"
+      [isLastTarget]="isLastTarget"
+      (roundSubmitted)="onTeamRoundSubmitted($event)">
+    </app-half-team-input>
 
   </div>
 

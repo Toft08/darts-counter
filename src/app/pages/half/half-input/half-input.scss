@@ -110,9 +110,30 @@
 }
 
 // ── Mobile ─────────────────────────────────────────
-@media (max-width: 400px) {
+@media (max-width: 480px) {
   .hit-btn {
     padding: 12px 4px !important;
     .hit-value { font-size: 1.3em !important; }
+  }
+
+  .dart-pip {
+    width: 36px;
+    height: 36px;
+    font-size: 0.8em;
+  }
+}
+
+@media (max-width: 360px) {
+  .hit-btn {
+    padding: 10px 2px !important;
+
+    .hit-label { font-size: 0.68em !important; }
+    .hit-value { font-size: 1.1em !important; }
+  }
+
+  .dart-pip {
+    width: 30px;
+    height: 30px;
+    font-size: 0.72em;
   }
 }
