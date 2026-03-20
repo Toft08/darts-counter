@@ -29,6 +29,7 @@ export class CheckoutComponent {
   startNumber: number = 81;
   trainingStarted: boolean = false;
   status: string = '';
+  errorMsg: string = '';
   showManualInput: boolean = false;
   players: Player[] = [];
   newPlayerName: string = '';
@@ -115,7 +116,7 @@ export class CheckoutComponent {
       : this.game.submitDart(dart, this.currentPlayer.score);
 
     if (!result.valid) {
-      alert('Invalid score! Must be between 0-180');
+      this.showError('Invalid score! Must be between 0–180');
       return;
     }
 
@@ -148,12 +149,7 @@ export class CheckoutComponent {
       this.status = 'success';
 
       this.startNewRound();
-
-      setTimeout(() => {
-        alert(`✅ ${winnerName} checked out! Next target: ${newTarget}`);
-        this.status = '';
-      }, 100);
-
+      setTimeout(() => { this.status = ''; }, 1200);
       return;
     } else if (this.game.getCurrentDartInRound() === 1 && !isPerTurn) {
       this.currentPlayer.lastDarts = dartsBeforeSubmit;
@@ -180,13 +176,15 @@ export class CheckoutComponent {
     if (allPlayersFinished) {
       // Round is over, reset for new round
       this.roundActive = false;
-      setTimeout(() => {
-        alert('Round over! No one checked out. Starting new round...');
-        this.startNewRound();
-      }, 500);
+      this.startNewRound();
     } else {
       // Move to next player
       this.nextPlayer();
     }
+  }
+
+  private showError(msg: string) {
+    this.errorMsg = msg;
+    setTimeout(() => { this.errorMsg = ''; }, 2500);
   }
 }

@@ -1,4 +1,5 @@
 <div class="per-visit-mode">
+  <p *ngIf="errorMsg" class="per-turn-error">{{ errorMsg }}</p>
   <div class="numpad">
     <button type="button" class="num-btn" (click)="appendNumber('1')">1</button>
     <button type="button" class="num-btn" (click)="appendNumber('2')">2</button>

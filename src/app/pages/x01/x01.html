@@ -1,6 +1,14 @@
 
 <div class="x01-container">
-  <div *ngIf="!gameStarted">
+  <!-- Match winner screen -->
+  <div *ngIf="matchWinner" class="match-over">
+    <div class="match-over-trophy">🎉</div>
+    <h2>{{ matchWinner }}</h2>
+    <p>wins the match!</p>
+    <button type="button" class="start-btn" (click)="newGame()">New Game</button>
+  </div>
+
+  <div *ngIf="!gameStarted && !matchWinner">
     <h3>Setup</h3>
     <form>
       <label>Start Points:
@@ -57,6 +65,7 @@
     
     <!-- Unified Input Grid at Bottom -->
     <div class="input-section">
+      <p *ngIf="errorMsg" class="inline-error">{{ errorMsg }}</p>
       <app-darts-input 
         (dartThrown)="onDartThrown($event)"
         (undoDart)="onUndoDart($event)">

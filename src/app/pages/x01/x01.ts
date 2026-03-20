@@ -27,6 +27,8 @@ export class X01Component {
   startPoints: number = 501;
   legs: number = 3;
   gameStarted: boolean = false;
+  matchWinner: string = '';
+  errorMsg: string = '';
   showManualInput: boolean = false;
   showManualLegs: boolean = false;
   players: Player[] = [];
@@ -94,7 +96,7 @@ export class X01Component {
       : this.game.submitDart(dart, this.currentPlayer.score);
 
     if (!result.valid) {
-      alert('Invalid score! Must be between 0-180');
+      this.showError('Invalid score! Must be between 0–180');
       return;
     }
 
@@ -112,12 +114,12 @@ export class X01Component {
 
       const legsNeeded = Math.ceil(this.legs / 2);
       if (this.currentPlayer.legsWon >= legsNeeded) {
-        alert(`🎉 ${this.currentPlayer.name} wins the match!`);
+        this.matchWinner = this.currentPlayer.name;
         this.gameStarted = false;
       } else {
-        alert(`${this.currentPlayer.name} wins the leg! Next leg starting...`);
         this.players.forEach(p => p.score = this.startPoints);
         this.currentPlayerIndex = 0;
+        this.game.resetRound();
       }
     } else if (this.game.getCurrentDartInRound() === 1) {
       // Turn finished (returned to dart 1); use pre-submit values
@@ -128,5 +130,15 @@ export class X01Component {
 
   onUndoDart(dart: DartThrow) {
     this.currentPlayer.score += dart.score;
+  }
+
+  newGame() {
+    this.matchWinner = '';
+    this.gameStarted = false;
+  }
+
+  private showError(msg: string) {
+    this.errorMsg = msg;
+    setTimeout(() => { this.errorMsg = ''; }, 2500);
   }
 }

@@ -163,3 +163,48 @@
     }
   }
 }
+
+.match-over {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 40px 20px;
+  text-align: center;
+
+  .match-over-trophy {
+    font-size: 3.5em;
+    line-height: 1;
+  }
+
+  h2 {
+    font-size: 2em;
+    color: #333;
+    margin: 0;
+  }
+
+  p {
+    color: #667eea;
+    font-size: 1.1em;
+    font-weight: 600;
+    margin: 0 0 16px;
+  }
+
+  .start-btn {
+    width: 200px;
+  }
+}
+
+.inline-error {
+  text-align: center;
+  color: #dc3545;
+  font-size: 0.9em;
+  font-weight: 600;
+  margin: 0 0 6px;
+  animation: error-fade-in 0.2s ease;
+}
+
+@keyframes error-fade-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

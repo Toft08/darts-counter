@@ -21,6 +21,7 @@ export class PerTurnInputComponent {
 
   visitScore: string = '';
   showUndoConfirm: boolean = false;
+  errorMsg: string = '';
 
   constructor(public game: GameService) {}
 
@@ -56,7 +57,8 @@ export class PerTurnInputComponent {
   submitVisit() {
     const score = parseInt(this.visitScore) || 0;
     if (score > 180) {
-      alert('Maximum score per visit is 180');
+      this.errorMsg = 'Max 180';
+      setTimeout(() => { this.errorMsg = ''; }, 2000);
       return;
     }
     this.dartThrown.emit(makeSyntheticThrow(score));

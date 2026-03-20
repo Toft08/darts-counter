@@ -137,6 +137,25 @@
   &:hover { transform: translateY(-2px); }
 }
 
+.new-game-btn {
+  width: 100%;
+  margin-top: 8px;
+  padding: 11px;
+  background: transparent;
+  color: #888;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.95em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: #aaa;
+    color: #555;
+  }
+}
+
 // ── In Game ────────────────────────────────────────
 .target-progress {
   display: flex;

@@ -180,10 +180,6 @@ export class HalfComponent {
 
   private endGame() {
     this.gameOver = true;
-    const winner = [...this.players].sort((a, b) => b.totalScore - a.totalScore)[0];
-    setTimeout(() => {
-      alert(`🎯 Game over! ${winner.name} wins with ${winner.totalScore} points!`);
-    }, 200);
   }
 
   get sortedPlayers(): HalfPlayer[] {
@@ -191,6 +187,14 @@ export class HalfComponent {
   }
 
   restartGame() {
+    if (this.teamMode) {
+      this.startTeamGame();
+    } else {
+      this.startGame();
+    }
+  }
+
+  newGame() {
     this.gameStarted = false;
     this.gameOver = false;
     this.teamMode = false;

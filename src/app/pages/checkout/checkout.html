@@ -50,6 +50,7 @@
     
     <!-- Unified Input Grid at Bottom -->
     <div class="input-section">
+      <p *ngIf="errorMsg" class="inline-error">{{ errorMsg }}</p>
       <app-darts-input 
         (dartThrown)="onDartThrown($event)"
         (undoDart)="onUndoDart($event)">
