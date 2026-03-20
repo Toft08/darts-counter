@@ -34,6 +34,7 @@ export class CheckoutComponent {
   players: Player[] = [];
   newPlayerName: string = '';
   currentPlayerIndex: number = 0;
+  roundStarterIndex: number = 0;
   roundActive: boolean = false;
 
   constructor(public game: GameService) {}
@@ -76,6 +77,7 @@ export class CheckoutComponent {
       p.failed = false;
     });
     this.currentPlayerIndex = 0;
+    this.roundStarterIndex = 0;
     this.trainingStarted = true;
     this.roundActive = true;
     this.status = '';
@@ -87,7 +89,7 @@ export class CheckoutComponent {
       p.dartsThrown = 0;
       p.failed = false;
     });
-    this.currentPlayerIndex = 0;
+    this.currentPlayerIndex = this.roundStarterIndex;
     this.roundActive = true;
     this.game.resetToFirstDart(); // Use resetToFirstDart to align to dart 1
   }
@@ -152,6 +154,7 @@ export class CheckoutComponent {
       this.currentPlayer.target++;
       this.status = 'success';
 
+      this.roundStarterIndex = (this.currentPlayerIndex + 1) % this.players.length;
       this.startNewRound();
       setTimeout(() => { this.status = ''; }, 1200);
       return;

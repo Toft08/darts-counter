@@ -34,6 +34,7 @@ export class X01Component {
   players: Player[] = [];
   newPlayerName: string = '';
   currentPlayerIndex: number = 0;
+  currentLeg: number = 1;
 
   constructor(public game: GameService) {}
 
@@ -69,6 +70,7 @@ export class X01Component {
       p.legsWon = 0;
     });
     this.currentPlayerIndex = 0;
+    this.currentLeg = 1;
     this.gameStarted = true;
   }
 
@@ -122,8 +124,9 @@ export class X01Component {
         this.matchWinner = this.currentPlayer.name;
         this.gameStarted = false;
       } else {
+        this.currentLeg++;
         this.players.forEach(p => p.score = this.startPoints);
-        this.currentPlayerIndex = 0;
+        this.currentPlayerIndex = (this.currentLeg - 1) % this.players.length;
         this.game.resetToFirstDart();
       }
     } else if (this.game.getCurrentDartInRound() === 1) {
