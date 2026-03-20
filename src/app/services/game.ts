@@ -57,7 +57,7 @@ export class GameService {
 
     // Check for bust
     if (dartScore > currentScore) {
-      this.resetRound();
+      this.resetToFirstDart();
       return { valid: true, bust: true, finished: false, newScore: currentScore };
     }
 
@@ -79,7 +79,7 @@ export class GameService {
 
     // Check if finished (score = 0)
     if (newScore === 0) {
-      this.resetRound();
+      this.resetToFirstDart();
       return { valid: true, bust: false, finished: true, newScore: 0 };
     }
 

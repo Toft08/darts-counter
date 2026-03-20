@@ -103,13 +103,13 @@ export class CheckoutComponent {
   onDartThrown(dart: DartThrow) {
     const isPerTurn = isSyntheticThrow(dart);
 
-    // Capture dart values before submit when this is the 3rd dart,
-    // because submitDart() resets game.dart1/2/3 after the round.
-    const isThirdDart = !isPerTurn && this.game.getCurrentDartInRound() === 3;
-    let dartsBeforeSubmit: [number, number, number] = [0, 0, 0];
-    if (isThirdDart) {
-      dartsBeforeSubmit = [this.game.dart1, this.game.dart2, dart.score];
-    }
+    // Capture dart values before submit — submitDart resets dart1/2/3 on bust or finish.
+    const dartInRound = isPerTurn ? 3 : this.game.getCurrentDartInRound();
+    const dartsBeforeSubmit: [number, number, number] = [
+      dartInRound === 1 ? dart.score : this.game.dart1,
+      dartInRound === 2 ? dart.score : this.game.dart2,
+      dartInRound === 3 ? dart.score : this.game.dart3,
+    ];
 
     const result = isPerTurn
       ? this.game.submitTurn(dart.score, this.currentPlayer.score)
@@ -120,20 +120,26 @@ export class CheckoutComponent {
       return;
     }
 
-    // Track darts thrown
-    this.currentPlayer.dartsThrown += isPerTurn ? 3 : 1;
+    // Track darts thrown. On a dart-by-dart bust the whole turn is consumed —
+    // round up to the next multiple of 3 so the limit is "3 rounds" not "9 raw darts".
+    if (isPerTurn) {
+      this.currentPlayer.dartsThrown += 3;
+    } else {
+      this.currentPlayer.dartsThrown += 1;
+      if (result.bust) {
+        this.currentPlayer.dartsThrown = Math.ceil(this.currentPlayer.dartsThrown / 3) * 3;
+      }
+    }
 
     if (result.bust) {
-      this.currentPlayer.lastDarts = isThirdDart ? dartsBeforeSubmit : [this.game.dart1, this.game.dart2, this.game.dart3];
+      this.currentPlayer.lastDarts = dartsBeforeSubmit;
       this.currentPlayer.score = this.currentPlayer.target;
 
-      if (this.game.getCurrentDartInRound() === 1 || isPerTurn) {
-        if (this.currentPlayer.dartsThrown >= 9) {
-          this.currentPlayer.failed = true;
-          this.checkRoundEnd();
-        } else {
-          this.nextPlayer();
-        }
+      if (this.currentPlayer.dartsThrown >= 9) {
+        this.currentPlayer.failed = true;
+        this.checkRoundEnd();
+      } else {
+        this.nextPlayer();
       }
       return;
     }
@@ -141,11 +147,9 @@ export class CheckoutComponent {
     this.currentPlayer.score = result.newScore;
 
     if (result.finished) {
-      this.currentPlayer.lastDarts = isThirdDart ? dartsBeforeSubmit : [this.game.dart1, this.game.dart2, this.game.dart3];
+      this.currentPlayer.lastDarts = dartsBeforeSubmit;
       this.currentPlayer.checkouts++;
       this.currentPlayer.target++;
-      const winnerName = this.currentPlayer.name;
-      const newTarget = this.currentPlayer.target;
       this.status = 'success';
 
       this.startNewRound();

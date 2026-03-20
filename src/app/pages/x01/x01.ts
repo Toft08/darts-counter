@@ -83,13 +83,16 @@ export class X01Component {
   onDartThrown(dart: DartThrow) {
     const isPerTurn = isSyntheticThrow(dart);
 
-    // Capture dart values before submit when this is the 3rd dart,
-    // because submitDart() resets game.dart1/2/3 after the round.
-    const isThirdDart = !isPerTurn && this.game.getCurrentDartInRound() === 3;
-    let dartsBeforeSubmit: [number, number, number] = [0, 0, 0];
-    if (isThirdDart) {
-      dartsBeforeSubmit = [this.game.dart1, this.game.dart2, dart.score];
-    }
+    // Capture dart values before submit — submitDart resets dart1/2/3 on bust or finish.
+    const dartInRound = isPerTurn ? 3 : this.game.getCurrentDartInRound();
+    const dartsBeforeSubmit: [number, number, number] = [
+      dartInRound === 1 ? dart.score : this.game.dart1,
+      dartInRound === 2 ? dart.score : this.game.dart2,
+      dartInRound === 3 ? dart.score : this.game.dart3,
+    ];
+
+    // Save accumulated round score so we can restore it on a mid-round bust.
+    const roundScoreSoFar = this.game.roundScore;
 
     const result = isPerTurn
       ? this.game.submitTurn(dart.score, this.currentPlayer.score)
@@ -101,7 +104,9 @@ export class X01Component {
     }
 
     if (result.bust) {
-      this.currentPlayer.lastDarts = isThirdDart ? dartsBeforeSubmit : [this.game.dart1, this.game.dart2, this.game.dart3];
+      // Restore any score that was already deducted by earlier darts in this round.
+      this.currentPlayer.score += roundScoreSoFar;
+      this.currentPlayer.lastDarts = dartsBeforeSubmit;
       this.nextPlayer();
       return;
     }
@@ -109,7 +114,7 @@ export class X01Component {
     this.currentPlayer.score = result.newScore;
 
     if (result.finished) {
-      this.currentPlayer.lastDarts = isThirdDart ? dartsBeforeSubmit : [this.game.dart1, this.game.dart2, this.game.dart3];
+      this.currentPlayer.lastDarts = dartsBeforeSubmit;
       this.currentPlayer.legsWon++;
 
       const legsNeeded = Math.ceil(this.legs / 2);
@@ -119,7 +124,7 @@ export class X01Component {
       } else {
         this.players.forEach(p => p.score = this.startPoints);
         this.currentPlayerIndex = 0;
-        this.game.resetRound();
+        this.game.resetToFirstDart();
       }
     } else if (this.game.getCurrentDartInRound() === 1) {
       // Turn finished (returned to dart 1); use pre-submit values
